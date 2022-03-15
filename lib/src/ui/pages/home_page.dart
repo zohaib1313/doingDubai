@@ -1,8 +1,8 @@
-import 'package:doingdubai/src/ui/views/bottom_calender_view.dart';
-import 'package:doingdubai/src/ui/views/home_page_bottom.dart';
-import 'package:doingdubai/src/ui/views/profile_page_bottom.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/widgets/utils/Utils.dart';
+import 'package:dubai_screens/src/ui/views/bottom_calender_view.dart';
+import 'package:dubai_screens/src/ui/views/home_page_bottom.dart';
+import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/widgets/utils/Utils.dart';
 import 'package:flutter/material.dart';
 
 import '../views/recommended_booking.dart';

@@ -1,10 +1,10 @@
-import 'package:doingdubai/config/app_urls.dart';
-import 'package:doingdubai/config/dio/app_dio.dart';
-import 'package:doingdubai/config/keys/response_code.dart';
-import 'package:doingdubai/model/hotels_model.dart';
-import 'package:doingdubai/src/ui/pages/inqury/make_inqury.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/config/app_urls.dart';
+import 'package:dubai_screens/config/dio/app_dio.dart';
+import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 

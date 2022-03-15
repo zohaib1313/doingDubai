@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:doingdubai/config/app_urls.dart';
-import 'package:doingdubai/config/dio/app_dio.dart';
-import 'package:doingdubai/config/dio/functions.dart';
-import 'package:doingdubai/config/keys/pref_keys.dart';
-import 'package:doingdubai/config/keys/response_code.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/widgets/profile_image.dart';
+import 'package:dubai_screens/config/app_urls.dart';
+import 'package:dubai_screens/config/dio/app_dio.dart';
+import 'package:dubai_screens/config/dio/functions.dart';
+import 'package:dubai_screens/config/keys/pref_keys.dart';
+import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/widgets/profile_image.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';

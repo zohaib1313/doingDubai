@@ -1,6 +1,6 @@
-import 'package:doingdubai/config/dio/app_dio.dart';
-import 'package:doingdubai/model/booking.dart';
-import 'package:doingdubai/model/hotel_model.dart';
+import 'package:dubai_screens/config/dio/app_dio.dart';
+import 'package:dubai_screens/model/booking.dart';
+import 'package:dubai_screens/model/hotel_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/hotels_model.dart';

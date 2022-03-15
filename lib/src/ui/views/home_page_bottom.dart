@@ -1,18 +1,17 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'package:doingdubai/config/app_urls.dart';
-import 'package:doingdubai/config/dio/app_dio.dart';
-import 'package:doingdubai/config/keys/pref_keys.dart';
-import 'package:doingdubai/config/keys/response_code.dart';
-import 'package:doingdubai/model/hotel_model.dart';
-import 'package:doingdubai/model/hotels_model.dart';
-import 'package:doingdubai/src/ui/pages/inqury/make_inqury.dart';
-import 'package:doingdubai/src/ui/views/all_hotels_page.dart';
-import 'package:doingdubai/src/ui/views/profile_page_bottom.dart';
-import 'package:doingdubai/src/ui/widgets/decrated_text_field.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/images.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/config/app_urls.dart';
+import 'package:dubai_screens/config/dio/app_dio.dart';
+import 'package:dubai_screens/config/keys/pref_keys.dart';
+import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
+import 'package:dubai_screens/src/ui/views/all_hotels_page.dart';
+import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
+import 'package:dubai_screens/src/ui/widgets/decrated_text_field.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
@@ -28,8 +27,10 @@ class _BottomHomePageState extends State<BottomHomePage> {
   late AppDio _dio;
 
   TextEditingController searchController = TextEditingController();
-  List<HotelsModel> _myHotelsList = [];
-  List<HotelsModel> _HotelsSearchList = [];
+  List<HotelsModel> _luxuryAllHotels = [];
+  List<HotelsModel> _luxuryHotelsSearchList = [];
+  List<HotelsModel> _popularAllHotels = [];
+  List<HotelsModel> _popularHotelsSearchList = [];
   bool _loadingHotelsList = true;
   String? _profileImageURL;
 
@@ -119,7 +120,8 @@ class _BottomHomePageState extends State<BottomHomePage> {
                 ),
               ),
             ),
-            for (int i = 0; i < hotelList.length; i++) _buildVerticalList(i)
+            for (int i = 0; i < _popularHotelsSearchList.length; i++)
+              _buildVerticalList(i)
           ],
         ),
       ),
@@ -127,101 +129,116 @@ class _BottomHomePageState extends State<BottomHomePage> {
   }
 
   Widget _buildVerticalList(int i) {
-    return GestureDetector(
-      onTap: () {
-        AppNavigation().push(
-          context,
-          MakeInqury(
-            ///setting temporary with dummy
-            hotelModel: HotelsModel(
-                hotel: hotelList[i].hotelName,
-                amenities: 'Bar,Wifi,Cam',
-                imageUrl: hotelList[i].hotelImage,
-                id: -1,
-                address: 'Dubai,United Arab Emirates'),
-          ),
-        );
-      },
-      child: Padding(
-          padding: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
-          child: Material(
-            elevation: 1,
-            color: AppColors.blackColor,
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.blackColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
+    return _loadingHotelsList == true
+        ? Container(
+            height: 325.0,
+            width: MediaQuery.of(context).size.width,
+            child: Center(
+                child: CircularProgressIndicator(
+              color: AppColors.kPrimary,
+            )),
+          )
+        : _popularHotelsSearchList.isEmpty
+            ? Container(
+                height: 325.0,
+                width: MediaQuery.of(context).size.width,
+                child: Center(child: Text('No data found')),
+              )
+            : GestureDetector(
+                onTap: () {
+                  AppNavigation().push(
+                    context,
+                    MakeInqury(
+                      ///setting temporary with dummy
+                      hotelModel: _popularHotelsSearchList[i],
                     ),
-                    child: Image.asset(
-                      hotelList[i].hotelImage,
-                      width: 120,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            hotelList[i].hotelName,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: AppColors.whiteColor),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              "Four Seasons Resort Dubai at Jumeirah Beach offers..",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
-                              style: TextStyle(
-                                  height: 1.5,
-                                  fontSize: 16,
-                                  color: Colors.grey),
+                  );
+                },
+                child: Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 30, left: 20, right: 20),
+                    child: Material(
+                      elevation: 1,
+                      color: AppColors.blackColor,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.blackColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                bottomLeft: Radius.circular(20),
+                              ),
+                              child: Image.network(
+                                '${AppUrl.imageBaseUrl}${_popularHotelsSearchList[i].imageUrl}',
+                                width: 120,
+                                height: 150,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "Dubai,United Arab Emirates",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 16, color: AppColors.kPrimary),
-                          ),
-                        ],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _popularHotelsSearchList[i].hotel ?? '',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: AppColors.whiteColor),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        'Dummy Description  Dummy Description Dummy Description'
+                                        'Dummy Description',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
+                                        style: TextStyle(
+                                            height: 1.5,
+                                            fontSize: 16,
+                                            color: Colors.grey),
+                                      ),
+                                    ),
+                                    Text(
+                                      _popularHotelsSearchList[i].address ?? '',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: AppColors.kPrimary),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 5, top: 15),
+                                child: Text(
+                                  "\£",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 16, color: AppColors.kPrimary),
+                                )),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 5, top: 15),
-                      child: Text(
-                        "\£",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style:
-                            TextStyle(fontSize: 16, color: AppColors.kPrimary),
-                      )),
-                ],
-              ),
-            ),
-          )),
-    );
+                    )),
+              );
   }
 
   Widget _buildViewAll() {
@@ -260,11 +277,11 @@ class _BottomHomePageState extends State<BottomHomePage> {
           Expanded(
               child: SearchField(
                   onChange: (v) {
+                    print(v);
                     if (v.length > 2) {
                       _getSearchList(v);
-                    } else if (v.length <= 2) {
-                      print(_myHotelsList);
-                      _HotelsSearchList = _myHotelsList;
+                    } else if (v.length <= 2 || v.isEmpty) {
+                      _luxuryHotelsSearchList = _luxuryAllHotels;
                       setState(() {});
                     }
                   },
@@ -371,15 +388,15 @@ class _BottomHomePageState extends State<BottomHomePage> {
           )
         : SizedBox(
             height: 325.0,
-            child: _HotelsSearchList.length > 0
+            child: _luxuryHotelsSearchList.length > 0
                 ? ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
-                    itemCount: _HotelsSearchList.length,
+                    itemCount: _luxuryHotelsSearchList.length,
                     itemBuilder: (c, i) {
-                      var item = _HotelsSearchList[i];
+                      var item = _luxuryHotelsSearchList[i];
                       return GestureDetector(
                           onTap: () {
                             AppNavigation()
@@ -421,14 +438,17 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                         child: Align(
                                           child: GestureDetector(
                                             child: Icon(
-                                              _myHotelsList[i].isFavourite
+                                              _luxuryHotelsSearchList[i]
+                                                      .isFavourite
                                                   ? Icons.favorite
                                                   : Icons.favorite_border,
                                               color: AppColors.kPrimary,
                                             ),
                                             onTap: () {
-                                              _myHotelsList[i].isFavourite =
-                                                  !_myHotelsList[i].isFavourite;
+                                              _luxuryHotelsSearchList[i]
+                                                      .isFavourite =
+                                                  !_luxuryHotelsSearchList[i]
+                                                      .isFavourite;
                                               setState(() {});
                                             },
                                           ),
@@ -448,16 +468,16 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                             color: AppColors.whiteColor),
                                       ),
                                     ),
-                                    const Padding(
+                                    Padding(
                                       padding: EdgeInsets.only(
                                           left: 10,
                                           right: 5,
                                           top: 8,
                                           bottom: 8),
                                       child: Text(
-                                        'Dubai,UAE',
+                                        item.address ?? '',
                                         overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
+                                        maxLines: 1,
                                         style: TextStyle(
                                             fontSize: 16, color: Colors.grey),
                                       ),
@@ -496,7 +516,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
   }
 
   _init() async {
-    await _getAllProductsList();
+    await _getAllHotelsList();
     _getUserData();
   }
 
@@ -509,7 +529,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
     });
   }
 
-  _getAllProductsList() async {
+  _getAllHotelsList() async {
     try {
       var response = await _dio.get(
         path: AppUrl.getAllHotels,
@@ -519,13 +539,26 @@ class _BottomHomePageState extends State<BottomHomePage> {
       if (responseStatusCode == StatusCode.OK) {
         _loadingHotelsList = false;
         var products = responseData['data']['hotels'];
-        List<HotelsModel> hotelsTempList = [];
+        List<HotelsModel> luxuryHotelsListTemp = [];
+        List<HotelsModel> popularHotelListTemp = [];
+
         products.forEach((item) async {
-          hotelsTempList.add(HotelsModel.fromJson(item));
+          var hotel = HotelsModel.fromJson(item);
+          if ((hotel.popular ?? false)) {
+            popularHotelListTemp.add(hotel);
+          } else {
+            popularHotelListTemp.add(hotel);
+
+            luxuryHotelsListTemp.add(hotel); ////temporary todo
+          }
         });
+
         setState(() {
-          _myHotelsList = hotelsTempList;
-          _HotelsSearchList = _myHotelsList;
+          _luxuryAllHotels = luxuryHotelsListTemp;
+          _luxuryHotelsSearchList = _luxuryAllHotels;
+
+          _popularAllHotels = popularHotelListTemp;
+          _popularHotelsSearchList = _popularAllHotels;
         });
       } else {
         if (responseData != null) {
@@ -554,6 +587,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
   }
 
   _getSearchList(String text) async {
+    setState(() {
+      _loadingHotelsList = true;
+    });
     try {
       var response = await _dio.post(path: AppUrl.searchList, data: {
         "query": text,
@@ -563,13 +599,14 @@ class _BottomHomePageState extends State<BottomHomePage> {
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
         var products = responseData['data']['hotels'];
-        print(products);
+
         List<HotelsModel> hotelsTempList = [];
         products.forEach((item) async {
           hotelsTempList.add(HotelsModel.fromJson(item));
         });
         setState(() {
-          _HotelsSearchList = hotelsTempList;
+          _luxuryHotelsSearchList = hotelsTempList;
+          _loadingHotelsList = false;
         });
       } else {
         if (responseData != null) {

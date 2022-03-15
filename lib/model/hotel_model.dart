@@ -1,4 +1,4 @@
-import 'package:doingdubai/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/images.dart';
 
 class HotelModel {
   String hotelName;

@@ -1,4 +1,4 @@
-import 'package:doingdubai/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class DecoratedTextField extends StatefulWidget {

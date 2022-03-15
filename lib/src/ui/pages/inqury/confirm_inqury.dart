@@ -1,5 +1,5 @@
-import 'package:doingdubai/model/hotels_model.dart';
-import 'package:doingdubai/src/ui/pages/home_page.dart';
+import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/src/ui/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/colors.dart';

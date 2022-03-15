@@ -1,7 +1,7 @@
-import 'package:doingdubai/src/ui/pages/inqury/confirm_inqury.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/src/ui/pages/inqury/confirm_inqury.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

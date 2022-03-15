@@ -1,10 +1,10 @@
-import 'package:doingdubai/src/ui/pages/auth/sign_in.dart';
-import 'package:doingdubai/src/ui/pages/auth/sign_up.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/const.dart';
-import 'package:doingdubai/src/utils/images.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/src/ui/pages/auth/sign_in.dart';
+import 'package:dubai_screens/src/ui/pages/auth/sign_up.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/const.dart';
+import 'package:dubai_screens/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
 

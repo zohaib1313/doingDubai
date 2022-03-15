@@ -1,6 +1,6 @@
-import 'package:doingdubai/config/keys/pref_keys.dart';
-import 'package:doingdubai/src/ui/views/profile_page_bottom.dart';
-import 'package:doingdubai/src/utils/colors.dart';
+import 'package:dubai_screens/config/keys/pref_keys.dart';
+import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:req_fun/req_fun.dart';

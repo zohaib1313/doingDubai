@@ -1,7 +1,7 @@
-import 'package:doingdubai/src/ui/pages/home_page.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/src/utils/images.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/src/ui/pages/home_page.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
