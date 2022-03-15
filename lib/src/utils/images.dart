@@ -1,0 +1,42 @@
+String image = 'assets/images';
+
+class AppImages {
+  static String logoApp = '$image/logo.png';
+  static String getStarted = '$image/get_started.png';
+  static String facebookLogo = '$image/facebook_logo.png';
+  static String appleLogo = '$image/apple_logo.png';
+  static String bottomStatsIcon = '$image/bottom_stats.png';
+  static String bottomSettingIcon = '$image/bottom_setting.png';
+  static String bottomPersonIcon = '$image/bottom_person.png';
+  static String bottomCalculateIcon = '$image/bottom_calculate.png';
+  static String bottomHomeIcon = '$image/bottom_home.png';
+  static String bottomMasterCard = '$image/master_card.png';
+  static String bottomVisaCard = '$image/visa_card.png';
+  static String building = '$image/building.png';
+  static String bottomPayPalCard = '$image/paypal_card.png';
+  static String payment = '$image/payment.png';
+  static String editProfile = '$image/edit_profile.png';
+  static String profileImage = '$image/profile_image.png';
+  static String booking = '$image/booking.png';
+  static String hotel = '$image/hotel.jpg';
+  static String hotel1 = '$image/hotel1.jpg';
+  static String hotel3 = '$image/hotel3.jpg';
+  static String hotel4 = '$image/hotel4.jpg';
+  static String hotel5 = '$image/hotel5.png';
+  static String send = '$image/send.png';
+  static String person = '$image/person1.jpg';
+  static String selfie1 = '$image/selfie1.jpg';
+  static String selfie2 = '$image/selfie2.jpg';
+  static String selfie4 = '$image/selfie4.jpg';
+  static String ak10 = '$image/1OAK.jpg';
+  static String bm = '$image/bm.jpg';
+  static String fph = '$image/fph.jpg';
+  static String kb = '$image/kb.jpg';
+  static String rs = '$image/rs.jpg';
+  static String sa = '$image/sa.jpg';
+  static String tfs = '$image/tfs.jpg';
+  static String tph = '$image/tph.jpg';
+  static String zg = '$image/zg.jpg';
+  static String dnc = '$image/dnc.jpg';
+  static final String userIcon = '$image/user.png';
+}
