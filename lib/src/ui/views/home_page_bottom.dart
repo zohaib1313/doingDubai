@@ -282,6 +282,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                       _getSearchList(v);
                     } else if (v.length <= 2 || v.isEmpty) {
                       _luxuryHotelsSearchList = _luxuryAllHotels;
+                      _popularHotelsSearchList = _popularAllHotels;
                       setState(() {});
                     }
                   },
@@ -388,7 +389,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
           )
         : SizedBox(
             height: 325.0,
-            child: _luxuryHotelsSearchList.length > 0
+            child: _luxuryHotelsSearchList.isNotEmpty
                 ? ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
@@ -469,7 +470,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                           left: 10,
                                           right: 5,
                                           top: 8,
@@ -478,7 +479,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                         item.address ?? '',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 16, color: Colors.grey),
                                       ),
                                     ),
@@ -542,10 +543,11 @@ class _BottomHomePageState extends State<BottomHomePage> {
         List<HotelsModel> luxuryHotelsListTemp = [];
         List<HotelsModel> popularHotelListTemp = [];
 
-        products.forEach((item) async {
+        await products.forEach((item) async {
           var hotel = HotelsModel.fromJson(item);
           if ((hotel.popular ?? false)) {
             popularHotelListTemp.add(hotel);
+            luxuryHotelsListTemp.add(hotel);
           } else {
             popularHotelListTemp.add(hotel);
 
@@ -599,15 +601,33 @@ class _BottomHomePageState extends State<BottomHomePage> {
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
         var products = responseData['data']['hotels'];
+        List<HotelsModel> luxuryHotelsListTemp = [];
+        List<HotelsModel> popularHotelListTemp = [];
 
-        List<HotelsModel> hotelsTempList = [];
+        await products.forEach((item) async {
+          var hotel = HotelsModel.fromJson(item);
+          if ((hotel.popular ?? false)) {
+            popularHotelListTemp.add(hotel);
+            luxuryHotelsListTemp.add(hotel);
+          } else {
+            popularHotelListTemp.add(hotel);
+            luxuryHotelsListTemp.add(hotel); ////temporary todo
+          }
+        });
+
+        setState(() {
+          _luxuryHotelsSearchList = luxuryHotelsListTemp;
+          _popularHotelsSearchList = popularHotelListTemp;
+          _loadingHotelsList = false;
+        });
+        /*  List<HotelsModel> hotelsTempList = [];
         products.forEach((item) async {
           hotelsTempList.add(HotelsModel.fromJson(item));
         });
         setState(() {
           _luxuryHotelsSearchList = hotelsTempList;
           _loadingHotelsList = false;
-        });
+        });*/
       } else {
         if (responseData != null) {
           errorDialog(context, 'Error', responseData['message'],

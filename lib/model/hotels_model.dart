@@ -7,7 +7,7 @@ class HotelsModel {
   String? openingHours;
   String? menuOptions;
   String? dressCode;
-  bool? adults;
+//  bool? adults;
   bool? popular;
   String? price;
   String? amenities;
@@ -25,7 +25,7 @@ class HotelsModel {
       this.openingHours,
       this.menuOptions,
       this.dressCode,
-      this.adults = true,
+      //this.adults = true,
       this.price,
       this.amenities,
       this.imageUrl,
@@ -40,12 +40,12 @@ class HotelsModel {
     openingHours = json['opening_hours'];
     menuOptions = json['menu_options'];
     dressCode = json['dress_code'];
-    adults = json['adults'] ?? false;
+    //adults = json['adults'] ?? false;
     price = json['price'];
     amenities = json['amenities'];
     imageUrl = json['image_url'];
     createdAt = json['created_at'];
-    popular = json['popular'];
+    //popular = json['popular'];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,12 +58,12 @@ class HotelsModel {
     data['opening_hours'] = this.openingHours;
     data['menu_options'] = this.menuOptions;
     data['dress_code'] = this.dressCode;
-    data['adults'] = this.adults;
+    //  data['adults'] = this.adults;
     data['price'] = this.price;
     data['amenities'] = this.amenities;
     data['image_url'] = this.imageUrl;
     data['created_at'] = this.createdAt;
-    data['popular'] = this.popular;
+    // data['popular'] = this.popular;
     return data;
   }
 }
