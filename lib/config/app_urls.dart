@@ -1,17 +1,19 @@
 class AppUrl {
-  static final String baseUrl = "http://dubai.applypressure.co.uk/api/";
+  static const String baseUrl = "http://dubai.applypressure.co.uk/api/";
 
-  static final String loginUrl = "login";
-  static final String logoutUrl = "logout";
-  static final String signUpUrl = "register";
-  static final String updateProfile = "update-myprofile";
-  static final String searchList = "search";
-  static final String signUpAnonymousUrl = "/auth/anonymous";
-  static String fileUpload = "/files/upload";
-  static final String contacts = "";
-  static final String getAllHotels = "all-hotels";
-  static final String submitPersonality = "submit-personality";
+  static const String loginUrl = "login";
+  static const String logoutUrl = "logout";
+  static const String signUpUrl = "register";
+  static const String updateProfile = "update-myprofile";
+  static const String searchList = "search";
+  static const String signUpAnonymousUrl = "/auth/anonymous";
+  static const String fileUpload = "/files/upload";
+  static const String contacts = "";
+  static const String getAllHotels = "all-hotels";
+  static const String submitPersonality = "submit-personality";
+  static const String bookingsCreate = "bookings-create";
 
-  static final String imageBaseUrl =
+  //////images//////
+  static const String imageBaseUrl =
       'http://dubai.applypressure.co.uk/images/hotelpics/';
 }

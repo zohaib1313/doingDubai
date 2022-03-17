@@ -1,14 +1,22 @@
+import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/confirm_inqury.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:dubai_screens/src/utils/nav.dart';
+import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:req_fun/req_fun.dart';
 
+import '../../../../config/app_urls.dart';
+import '../../../../config/dio/functions.dart';
+import '../../../../config/keys/pref_keys.dart';
+import '../../../../config/keys/response_code.dart';
 import '../../../../model/hotels_model.dart';
 
 class SubmitInqury extends StatefulWidget {
   HotelsModel? hotelModel;
+
   SubmitInqury({Key? key, required this.hotelModel}) : super(key: key);
 
   @override
@@ -16,36 +24,30 @@ class SubmitInqury extends StatefulWidget {
 }
 
 class _SubmitInquryState extends State<SubmitInqury> {
-  List<String> times = [
-    '06:00 pm',
-    '07:00 pm',
-    '08:00 pm',
-    '09:00 pm',
-    '10:00 pm',
-    '11:00 pm',
-    '12:00 am',
-    '01:00 am',
-  ];
   DateTime? selectedFromDates;
-
-  Future<void> _selectFromDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        initialDatePickerMode: DatePickerMode.day,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
-    if (picked != null) {
-      setState(() {
-        selectedFromDates = picked;
-      });
-    }
-  }
-
   int _selectedIndex = -1;
-
   int _adults = 0;
   int _kids = 0;
+  bool _loading = false;
+  late AppDio _dio;
+  List<String> times = [];
+
+  TextEditingController _notesTextEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _notesTextEditingController.clear();
+    _dio = AppDio(context);
+    times = widget.hotelModel?.checkins?.split(",").toList() ?? [];
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +90,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
             Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: TextFormField(
+                  controller: _notesTextEditingController,
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -107,8 +110,15 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 text: 'Submit Inquiry',
                 textColor: AppColors.blackColor,
                 onTap: () {
-                  AppNavigation().push(
-                      context, ConfirmationInquiry(hotel: widget.hotelModel));
+                  if (selectedFromDates != null &&
+                      _selectedIndex != -1 &&
+                      _adults != 0 &&
+                      _notesTextEditingController.text.isNotEmpty) {
+                    _makeBookings();
+                  } else {
+                    warningDialog(context, "Warnings", "Fill all fields",
+                        closeOnBackPress: true, neutralButtonText: "OK");
+                  }
                 }),
           ],
         ),
@@ -160,7 +170,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
   ) {
     String selectedDate =
         DateFormat('dd  MMMM yyyy').format(selectedFromDates ?? DateTime.now());
-
+    selectedFromDates ??= DateTime.now();
     return Row(
       children: [
         Expanded(
@@ -214,8 +224,10 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 ),
                 _buildValueContainer(
                     decrementTap: () {
-                      _adults--;
-                      setState(() {});
+                      if (_adults > 0) {
+                        _adults--;
+                        setState(() {});
+                      }
                     },
                     incrementTap: () {
                       _adults++;
@@ -226,28 +238,34 @@ class _SubmitInquryState extends State<SubmitInqury> {
             ),
           ),
           const Spacer(),
-          Expanded(
-            child: Column(
-              children: [
-                const Text(
-                  'Kids',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                _buildValueContainer(
-                    decrementTap: () {
-                      _kids--;
-                      setState(() {});
-                    },
-                    incrementTap: () {
-                      _kids++;
-                      setState(() {});
-                    },
-                    val: _kids.toString()),
-              ],
+          Visibility(
+            visible: (widget.hotelModel?.adults == 1) ||
+                (widget.hotelModel?.adults == true),
+            child: Expanded(
+              child: Column(
+                children: [
+                  const Text(
+                    'Kids',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _buildValueContainer(
+                      decrementTap: () {
+                        if (_kids > 0) {
+                          _kids--;
+                          setState(() {});
+                        }
+                      },
+                      incrementTap: () {
+                        _kids++;
+                        setState(() {});
+                      },
+                      val: _kids.toString()),
+                ],
+              ),
             ),
           )
         ],
@@ -292,5 +310,92 @@ class _SubmitInquryState extends State<SubmitInqury> {
         ),
       ],
     );
+  }
+
+  Future<void> _selectFromDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      setState(() {
+        selectedFromDates = picked;
+      });
+    }
+  }
+
+  _makeBookings() async {
+    _loading = true;
+    progressDialog(context,
+        progressDialogType: ProgressDialogType.CIRCULAR,
+        contentWidget: Text("Please wait..."));
+    var responseData;
+
+    try {
+      String? userId = "";
+      await Prefs.getPrefs().then((prefs) {
+        userId = prefs.getInt(PrefKey.ID).toString();
+      });
+      var response = await _dio.post(
+        path: AppUrl.bookingsCreate,
+        data: {
+          "entity_type": "Hotel",
+          "entity_type_id": (widget.hotelModel?.id.toString() ?? "-1"),
+          "user_id": userId ?? '-1',
+          "sent": "1",
+          "seen": "0",
+          "actioned": "0",
+          "book_date": DateFormat('yyyy-MM-dd')
+              .format(selectedFromDates!) /*"2022-02-21"*/,
+          "book_time": times.elementAt(_selectedIndex),
+          "adults": _adults.toString(),
+          "kids": _kids.toString(),
+          "notes": _notesTextEditingController.text,
+        },
+      );
+
+      if (_loading) {
+        pop();
+        _loading = false;
+      }
+
+      var responseStatusCode = response.statusCode;
+      responseData = response.data;
+
+      if (responseStatusCode == StatusCode.OK) {
+        AppNavigation().pushReplacement(
+            context, ConfirmationInquiry(hotel: widget.hotelModel));
+        // replace(PersonalityTestPage());
+      } else {
+        if (responseData != null) {
+          warningDialog(
+              context, responseData['message'], responseData['description'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
+          responseError(context, response);
+        }
+      }
+    } catch (e, s) {
+      if (_loading) {
+        pop();
+        _loading = false;
+      }
+
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      errorDialog(context, "Error", responseData["message"],
+          closeOnBackPress: true, neutralButtonText: "OK");
+
+      // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
+    }
   }
 }
