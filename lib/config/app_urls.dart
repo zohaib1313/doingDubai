@@ -12,6 +12,7 @@ class AppUrl {
   static const String getAllHotels = "all-hotels";
   static const String submitPersonality = "submit-personality";
   static const String bookingsCreate = "bookings-create";
+  static const String getMyBookings = 'all-my-bookings';
 
   //////images//////
   static const String imageBaseUrl =

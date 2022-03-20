@@ -1,10 +1,15 @@
+import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/pref_keys.dart';
+import 'package:dubai_screens/model/my_bookings_model.dart';
 import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:req_fun/req_fun.dart';
 
+import '../../../config/app_urls.dart';
+import '../../../config/keys/response_code.dart';
 import '../../../model/hotel_model.dart';
 
 class BookingsAndConfirmationsBottom extends StatefulWidget {
@@ -19,6 +24,10 @@ class _BookingsAndConfirmationsBottomState
     extends State<BookingsAndConfirmationsBottom> {
   DateTime? selectedFromDates;
   String? _profileImageURL;
+
+  bool _isLoading = true;
+
+  List<MyBookingsModel> _myAllBookingList = [];
 
   Future<void> _selectFromDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -50,10 +59,20 @@ class _BookingsAndConfirmationsBottomState
     }
   }
 
+  late AppDio _dio;
+
   @override
   void initState() {
-    _getUserData();
+    _dio = AppDio(context);
+    _init();
     super.initState();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   @override
@@ -89,21 +108,25 @@ class _BookingsAndConfirmationsBottomState
             preferredSize: const Size.fromHeight(60),
             child: _buildFromDateTimeRow(selectedFromDates, selectedToDates)),
       ),
-      body: ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(10, 50, 10, 20),
-          itemBuilder: (c, i) {
-            return getStackItem(
-                i: i,
-                title: hotelList[i].hotelName,
-                img: hotelList[i].hotelImage);
-          },
-          separatorBuilder: (c, i) {
-            return const SizedBox(
-              height: 25,
-            );
-          },
-          itemCount: hotelList.length),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(10, 50, 10, 20),
+              itemBuilder: (c, i) {
+                return getStackItem(
+                    i: i,
+                    title: hotelList[i].hotelName,
+                    img: hotelList[i].hotelImage);
+              },
+              separatorBuilder: (c, i) {
+                return const SizedBox(
+                  height: 25,
+                );
+              },
+              itemCount: hotelList.length),
     );
   }
 
@@ -259,5 +282,55 @@ class _BookingsAndConfirmationsBottomState
         ],
       ),
     );
+  }
+
+  _getMyBookings() async {
+    try {
+      var response = await _dio.get(
+        path: AppUrl.getMyBookings,
+      );
+      var responseStatusCode = response.statusCode;
+      var responseData = response.data;
+      if (responseStatusCode == StatusCode.OK) {
+        var products = responseData['data']['bookings'];
+        List<MyBookingsModel> bookingListTemp = [];
+
+        await products.forEach((item) async {
+          var booking = MyBookingsModel.fromJson(item);
+          bookingListTemp.add(booking);
+        });
+
+        setState(() {
+          _myAllBookingList = bookingListTemp;
+        });
+      } else {
+        if (responseData != null) {
+          errorDialog(context, 'Error', responseData['message'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          errorDialog(
+              context, "Error", "Something went wrong please try again later",
+              closeOnBackPress: true, neutralButtonText: "OK");
+        }
+      }
+    } catch (e, s) {
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+      errorDialog(
+          context, "Error", "Something went wrong please try again later",
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
+  }
+
+  void _init() async {
+    await _getMyBookings();
+    _getUserData();
   }
 }
