@@ -13,6 +13,9 @@ class AppUrl {
   static const String submitPersonality = "submit-personality";
   static const String bookingsCreate = "bookings-create";
   static const String getMyBookings = 'all-my-bookings';
+  static const String getLuxuryHotels = 'luxury-hotels';
+  static const String getPopularHotels = 'popular-hotels';
+  static var actionBooking = 'action-booking';
 
   //////images//////
   static const String imageBaseUrl =

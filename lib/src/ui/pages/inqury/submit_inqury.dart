@@ -112,8 +112,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 onTap: () {
                   if (selectedFromDates != null &&
                       _selectedIndex != -1 &&
-                      _adults != 0 &&
-                      _notesTextEditingController.text.isNotEmpty) {
+                      _adults != 0) {
                     _makeBookings();
                   } else {
                     warningDialog(context, "Warnings", "Fill all fields",
@@ -330,7 +329,8 @@ class _SubmitInquryState extends State<SubmitInqury> {
     _loading = true;
     progressDialog(context,
         progressDialogType: ProgressDialogType.CIRCULAR,
-        contentWidget: Text("Please wait..."));
+        contentWidget: const Text("Please wait..."));
+    // ignore: prefer_typing_uninitialized_variables
     var responseData;
 
     try {
@@ -363,10 +363,20 @@ class _SubmitInquryState extends State<SubmitInqury> {
 
       var responseStatusCode = response.statusCode;
       responseData = response.data;
+      print("*******\n");
+      print(responseData);
+      print("*******\n");
 
       if (responseStatusCode == StatusCode.OK) {
         AppNavigation().pushReplacement(
-            context, ConfirmationInquiry(hotel: widget.hotelModel));
+            context,
+            ConfirmationInquiry(
+                hotel: widget.hotelModel,
+                bookingId: (responseData['data']['booking']['id']).toString(),
+                time: times.elementAt(_selectedIndex),
+                date: DateFormat('yyyy-MM-dd').format(selectedFromDates!),
+                kids: _kids,
+                adults: _adults));
         // replace(PersonalityTestPage());
       } else {
         if (responseData != null) {

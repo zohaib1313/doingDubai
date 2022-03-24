@@ -19,10 +19,14 @@ class HotelsModel {
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
+  String? description;
+  String? rating;
   bool isFavourite = false;
 
   HotelsModel(
       {this.id,
+      this.description,
+      this.rating,
       this.isFavourite = false,
       this.hotel,
       this.address,
@@ -65,30 +69,35 @@ class HotelsModel {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
+    description = json['description'];
+    rating = json['rating'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['hotel'] = this.hotel;
-    data['address'] = this.address;
-    data['contact_num'] = this.contactNum;
-    data['contact_person'] = this.contactPerson;
-    data['opening_hours'] = this.openingHours;
-    data['menu_options'] = this.menuOptions;
-    data['dress_code'] = this.dressCode;
-    data['adults'] = this.adults;
-    data['price'] = this.price;
-    data['amenities'] = this.amenities;
-    data['image_url'] = this.imageUrl;
-    data['recommended'] = this.recommended;
-    data['popular'] = this.popular;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['checkins'] = this.checkins;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['hotel'] = hotel;
+    data['address'] = address;
+    data['contact_num'] = contactNum;
+    data['contact_person'] = contactPerson;
+    data['opening_hours'] = openingHours;
+    data['menu_options'] = menuOptions;
+    data['dress_code'] = dressCode;
+    data['adults'] = adults;
+    data['price'] = price;
+    data['amenities'] = amenities;
+    data['image_url'] = imageUrl;
+    data['recommended'] = recommended;
+    data['popular'] = popular;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['checkins'] = checkins;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['deleted_at'] = deletedAt;
+    data['description'] = description;
+    data['rating'] = rating;
+
     return data;
   }
 }

@@ -4,10 +4,26 @@ import 'package:dubai_screens/src/utils/images.dart';
 import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 
+import '../../../model/hotels_model.dart';
 import '../../utils/colors.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({Key? key}) : super(key: key);
+  HotelsModel? hotel;
+  int adults;
+  int kids;
+  String date;
+  String time;
+  String bookingId;
+
+  PaymentPage(
+      {Key? key,
+      required this.hotel,
+      required this.adults,
+      required this.kids,
+      required this.date,
+      required this.time,
+      required this.bookingId})
+      : super(key: key);
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -60,22 +76,22 @@ class _PaymentPageState extends State<PaymentPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'KOYO Brunch',
-                        style: TextStyle(
+                      Text(
+                        widget.hotel?.hotel ?? '',
+                        style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Text(
-                          'Brunch',
-                          style: TextStyle(color: Colors.grey),
+                          widget.hotel?.description ?? '',
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                       Text(
-                        '04 Feb 2022 - 7PM',
+                        '${widget.date} ${widget.time}',
                         style: TextStyle(color: AppColors.kPrimary),
                       ),
                     ],

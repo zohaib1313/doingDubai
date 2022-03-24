@@ -31,7 +31,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
   List<HotelsModel> _luxuryHotelsSearchList = [];
   List<HotelsModel> _popularAllHotels = [];
   List<HotelsModel> _popularHotelsSearchList = [];
-  bool _loadingHotelsList = true;
+  bool _loadingLuxuryHotels = true;
+  bool _loadingPopularHotels = true;
+
   String? _profileImageURL;
 
   bool isCountryBtn = false;
@@ -109,7 +111,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                 )),
             _buildSearch(),
             _buildViewAll(),
-            _buildClubsHorizontal(),
+            _buildLuxuryHotelListView(),
             const Padding(
               padding: EdgeInsets.only(top: 15, left: 20, bottom: 15),
               child: Text(
@@ -121,16 +123,16 @@ class _BottomHomePageState extends State<BottomHomePage> {
               ),
             ),
             for (int i = 0; i < _popularHotelsSearchList.length; i++)
-              _buildVerticalList(i)
+              _buildPopularHotelList(i)
           ],
         ),
       ),
     );
   }
 
-  Widget _buildVerticalList(int i) {
-    return _loadingHotelsList == true
-        ? Container(
+  Widget _buildPopularHotelList(int i) {
+    return _loadingPopularHotels == true
+        ? SizedBox(
             height: 325.0,
             width: MediaQuery.of(context).size.width,
             child: Center(
@@ -139,17 +141,16 @@ class _BottomHomePageState extends State<BottomHomePage> {
             )),
           )
         : _popularHotelsSearchList.isEmpty
-            ? Container(
+            ? SizedBox(
                 height: 325.0,
                 width: MediaQuery.of(context).size.width,
-                child: Center(child: Text('No data found')),
+                child: const Center(child: Text('No data found')),
               )
             : GestureDetector(
                 onTap: () {
                   AppNavigation().push(
                     context,
                     MakeInqury(
-                      ///setting temporary with dummy
                       hotelModel: _popularHotelsSearchList[i],
                     ),
                   );
@@ -199,14 +200,15 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                           color: AppColors.whiteColor),
                                     ),
                                     Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
                                       child: Text(
-                                        'Dummy Description  Dummy Description Dummy Description'
-                                        'Dummy Description',
+                                        _popularHotelsSearchList[i]
+                                                .description ??
+                                            '',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             height: 1.5,
                                             fontSize: 16,
                                             color: Colors.grey),
@@ -228,7 +230,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                 padding:
                                     const EdgeInsets.only(right: 5, top: 15),
                                 child: Text(
-                                  "\£",
+                                  _popularHotelsSearchList[i].price ?? "\£",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   style: TextStyle(
@@ -377,8 +379,8 @@ class _BottomHomePageState extends State<BottomHomePage> {
     );
   }
 
-  Widget _buildClubsHorizontal() {
-    return _loadingHotelsList == true
+  Widget _buildLuxuryHotelListView() {
+    return _loadingLuxuryHotels == true
         ? Container(
             height: 325.0,
             width: MediaQuery.of(context).size.width,
@@ -458,7 +460,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left: 10),
+                                      padding: const EdgeInsets.only(left: 10),
                                       child: Text(
                                         "${item.hotel}",
                                         overflow: TextOverflow.ellipsis,
@@ -487,7 +489,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                       padding: const EdgeInsets.only(left: 10),
                                       child: Row(
                                         children: [
-                                          for (int i = 0; i < 5; i++)
+                                          for (int i = 0;
+                                              i < (item.rating ?? '0').toInt();
+                                              i++)
                                             Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 5),
@@ -510,14 +514,15 @@ class _BottomHomePageState extends State<BottomHomePage> {
                       );
                     },
                   )
-                : Center(
+                : const Center(
                     child: Text('No Result Found'),
                   ),
           );
   }
 
   _init() async {
-    await _getAllHotelsList();
+    await _getAllLuxuryHotels();
+    await _getAllPopularHotel();
     _getUserData();
   }
 
@@ -530,36 +535,72 @@ class _BottomHomePageState extends State<BottomHomePage> {
     });
   }
 
-  _getAllHotelsList() async {
+  _getAllLuxuryHotels() async {
     try {
       var response = await _dio.get(
-        path: AppUrl.getAllHotels,
+        path: AppUrl.getLuxuryHotels,
       );
       var responseStatusCode = response.statusCode;
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
-        _loadingHotelsList = false;
+        _loadingLuxuryHotels = false;
         var products = responseData['data']['hotels'];
         List<HotelsModel> luxuryHotelsListTemp = [];
-        List<HotelsModel> popularHotelListTemp = [];
 
         await products.forEach((item) async {
           var hotel = HotelsModel.fromJson(item);
-          if ((hotel.popular ?? false)) {
-            popularHotelListTemp.add(hotel);
-            luxuryHotelsListTemp.add(hotel);
-          } else {
-            popularHotelListTemp.add(hotel);
-
-            luxuryHotelsListTemp.add(hotel); ////temporary todo
-          }
+          luxuryHotelsListTemp.add(hotel);
         });
 
         setState(() {
           _luxuryAllHotels = luxuryHotelsListTemp;
           _luxuryHotelsSearchList = _luxuryAllHotels;
+        });
+      } else {
+        if (responseData != null) {
+          errorDialog(context, 'Error', responseData['message'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          errorDialog(
+              context, "Error", "Something went wrong please try again later",
+              closeOnBackPress: true, neutralButtonText: "OK");
+        }
+      }
+    } catch (e, s) {
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-          _popularAllHotels = popularHotelListTemp;
+      errorDialog(
+          context, "Error", "Something went wrong please try again later",
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
+  }
+
+  _getAllPopularHotel() async {
+    try {
+      var response = await _dio.get(
+        path: AppUrl.getPopularHotels,
+      );
+      var responseStatusCode = response.statusCode;
+      var responseData = response.data;
+      if (responseStatusCode == StatusCode.OK) {
+        _loadingPopularHotels = false;
+        var products = responseData['data']['hotels'];
+        List<HotelsModel> temp = [];
+
+        await products.forEach((item) async {
+          var hotel = HotelsModel.fromJson(item);
+          temp.add(hotel);
+        });
+
+        setState(() {
+          _popularAllHotels = temp;
           _popularHotelsSearchList = _popularAllHotels;
         });
       } else {
@@ -590,7 +631,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
 
   _getSearchList(String text) async {
     setState(() {
-      _loadingHotelsList = true;
+      _loadingLuxuryHotels = true;
     });
     try {
       var response = await _dio.post(path: AppUrl.searchList, data: {
@@ -602,23 +643,15 @@ class _BottomHomePageState extends State<BottomHomePage> {
       if (responseStatusCode == StatusCode.OK) {
         var products = responseData['data']['hotels'];
         List<HotelsModel> luxuryHotelsListTemp = [];
-        List<HotelsModel> popularHotelListTemp = [];
 
         await products.forEach((item) async {
           var hotel = HotelsModel.fromJson(item);
-          if ((hotel.popular ?? false)) {
-            popularHotelListTemp.add(hotel);
-            luxuryHotelsListTemp.add(hotel);
-          } else {
-            popularHotelListTemp.add(hotel);
-            luxuryHotelsListTemp.add(hotel); ////temporary todo
-          }
+          luxuryHotelsListTemp.add(hotel);
         });
 
         setState(() {
           _luxuryHotelsSearchList = luxuryHotelsListTemp;
-          _popularHotelsSearchList = popularHotelListTemp;
-          _loadingHotelsList = false;
+          _loadingLuxuryHotels = false;
         });
         /*  List<HotelsModel> hotelsTempList = [];
         products.forEach((item) async {
