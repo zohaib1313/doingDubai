@@ -18,6 +18,13 @@ class RecommendedBooking extends StatefulWidget {
 
 class _RecommendedBookingState extends State<RecommendedBooking> {
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.blackColor,
