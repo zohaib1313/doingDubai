@@ -225,7 +225,7 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
           }
         });*/
 
-        await products.forEach((item) async {
+        products.forEach((item) async {
           var booking = item as Map<String, dynamic>;
           if (mounted) {
             var customModel = await _getHotelOfBooking(booking['entity_id']);
@@ -250,6 +250,7 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
           if (mounted) {
             errorDialog(context, 'Error', responseData['message'],
                 closeOnBackPress: true, neutralButtonText: "OK");
+            return;
           }
         } else {
           if (mounted) {

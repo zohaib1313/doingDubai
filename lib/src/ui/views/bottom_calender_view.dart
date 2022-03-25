@@ -317,7 +317,7 @@ class _BookingsAndConfirmationsBottomState
         //   }
         // });
 
-        await products.forEach((item) async {
+        products.forEach((item) async {
           var booking = MyBookingsModel.fromJson(item as Map<String, dynamic>);
           if (mounted) {
             var customModel = await _getHotelOfBooking(booking);
@@ -336,6 +336,7 @@ class _BookingsAndConfirmationsBottomState
         if (responseData != null && mounted) {
           errorDialog(context, 'Error', responseData['message'],
               closeOnBackPress: true, neutralButtonText: "OK");
+          return;
         } else {
           if (mounted) {
             errorDialog(

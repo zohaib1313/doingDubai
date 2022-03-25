@@ -557,13 +557,16 @@ class _BottomHomePageState extends State<BottomHomePage> {
           _luxuryHotelsSearchList = _luxuryAllHotels;
         });
       } else {
-        if (responseData != null) {
+        if (responseData != null && mounted) {
           errorDialog(context, 'Error', responseData['message'],
               closeOnBackPress: true, neutralButtonText: "OK");
+          return;
         } else {
-          errorDialog(
-              context, "Error", "Something went wrong please try again later",
-              closeOnBackPress: true, neutralButtonText: "OK");
+          if (mounted) {
+            errorDialog(
+                context, "Error", "Something went wrong please try again later",
+                closeOnBackPress: true, neutralButtonText: "OK");
+          }
         }
       }
     } catch (e, s) {
@@ -575,10 +578,11 @@ class _BottomHomePageState extends State<BottomHomePage> {
       print(s);
       print(
           "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
-      errorDialog(
-          context, "Error", "Something went wrong please try again later",
-          closeOnBackPress: true, neutralButtonText: "OK");
+      if (mounted) {
+        errorDialog(
+            context, "Error", "Something went wrong please try again later",
+            closeOnBackPress: true, neutralButtonText: "OK");
+      }
     }
   }
 
