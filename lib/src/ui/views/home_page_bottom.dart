@@ -176,7 +176,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                 bottomLeft: Radius.circular(20),
                               ),
                               child: Image.network(
-                                '${AppUrl.imageBaseUrl}${_popularHotelsSearchList[i].imageUrl}',
+                                '${AppUrl.hotelsPicBaseUrl}${_popularHotelsSearchList[i].imageUrl}',
                                 width: 120,
                                 height: 150,
                                 fit: BoxFit.cover,
@@ -429,7 +429,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                                           fit: BoxFit.cover,
                                         ).image*/
                                               image: NetworkImage(
-                                                  '${AppUrl.imageBaseUrl}${item.imageUrl}'),
+                                                  '${AppUrl.hotelsPicBaseUrl}${item.imageUrl}'),
                                               fit: BoxFit.cover),
                                           borderRadius: const BorderRadius.only(
                                               topRight: Radius.circular(12),

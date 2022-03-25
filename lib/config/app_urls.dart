@@ -16,8 +16,10 @@ class AppUrl {
   static const String getLuxuryHotels = 'luxury-hotels';
   static const String getPopularHotels = 'popular-hotels';
   static var actionBooking = 'action-booking';
+  static var getOneHotel = 'get-hotel/';
+  static const String recommended_bookings = 'recommended-bookings';
 
   //////images//////
-  static const String imageBaseUrl =
+  static const String hotelsPicBaseUrl =
       'http://dubai.applypressure.co.uk/images/hotelpics/';
 }

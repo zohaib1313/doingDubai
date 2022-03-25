@@ -126,7 +126,7 @@ class _MakeInquryState extends State<MakeInqury> {
                       height: 150,
                       fit: BoxFit.cover,
                     ).image
-                  : Image.network(AppUrl.imageBaseUrl +
+                  : Image.network(AppUrl.hotelsPicBaseUrl +
                           (widget.hotelModel?.imageUrl ?? ''))
                       .image,
               fit: BoxFit.cover),

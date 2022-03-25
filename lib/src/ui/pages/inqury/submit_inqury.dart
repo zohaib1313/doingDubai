@@ -32,7 +32,8 @@ class _SubmitInquryState extends State<SubmitInqury> {
   late AppDio _dio;
   List<String> times = [];
 
-  TextEditingController _notesTextEditingController = TextEditingController();
+  final TextEditingController _notesTextEditingController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -110,6 +111,9 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 text: 'Submit Inquiry',
                 textColor: AppColors.blackColor,
                 onTap: () {
+                  print(_selectedIndex.toString());
+                  print(_adults.toString());
+
                   if (selectedFromDates != null &&
                       _selectedIndex != -1 &&
                       _adults != 0) {
@@ -254,13 +258,15 @@ class _SubmitInquryState extends State<SubmitInqury> {
                   _buildValueContainer(
                       decrementTap: () {
                         if (_kids > 0) {
-                          _kids--;
-                          setState(() {});
+                          setState(() {
+                            _kids--;
+                          });
                         }
                       },
                       incrementTap: () {
-                        _kids++;
-                        setState(() {});
+                        setState(() {
+                          _kids++;
+                        });
                       },
                       val: _kids.toString()),
                 ],
