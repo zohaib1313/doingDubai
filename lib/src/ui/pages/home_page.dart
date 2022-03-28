@@ -38,48 +38,75 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: _widgets[_currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
+    return WillPopScope(
+      onWillPop: () async {
+        final value = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('Are you sure you want to exit?'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Yes, exit'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            });
+
+        return value == true;
+      },
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: Colors.black,
-          showUnselectedLabels: true,
-          unselectedItemColor: Colors.white,
-          onTap: onChange,
-          currentIndex: _currentIndex,
-          selectedItemColor: AppColors.kPrimary,
-          type: BottomNavigationBarType.fixed,
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgViewer(
-                svgPath: 'assets/svgs/home.svg',
-                color: _currentIndex == 0 ? AppColors.kPrimary : Colors.white,
+          body: _widgets[_currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.black,
+            showUnselectedLabels: true,
+            unselectedItemColor: Colors.white,
+            onTap: onChange,
+            currentIndex: _currentIndex,
+            selectedItemColor: AppColors.kPrimary,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgViewer(
+                  svgPath: 'assets/svgs/home.svg',
+                  color: _currentIndex == 0 ? AppColors.kPrimary : Colors.white,
+                ),
+                label: '',
               ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgViewer(
-                svgPath: 'assets/svgs/filter.svg',
-                color: _currentIndex == 1 ? AppColors.kPrimary : Colors.white,
+              BottomNavigationBarItem(
+                icon: SvgViewer(
+                  svgPath: 'assets/svgs/filter.svg',
+                  color: _currentIndex == 1 ? AppColors.kPrimary : Colors.white,
+                ),
+                label: '',
               ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgViewer(
-                svgPath: 'assets/svgs/file.svg',
-                color: _currentIndex == 2 ? AppColors.kPrimary : Colors.white,
+              BottomNavigationBarItem(
+                icon: SvgViewer(
+                  svgPath: 'assets/svgs/file.svg',
+                  color: _currentIndex == 2 ? AppColors.kPrimary : Colors.white,
+                ),
+                label: '',
               ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgViewer(
-                svgPath: 'assets/svgs/profileIcon.svg',
-                color: _currentIndex == 3 ? AppColors.kPrimary : Colors.white,
+              BottomNavigationBarItem(
+                icon: SvgViewer(
+                  svgPath: 'assets/svgs/profileIcon.svg',
+                  color: _currentIndex == 3 ? AppColors.kPrimary : Colors.white,
+                ),
+                label: '',
               ),
-              label: '',
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -4,7 +4,6 @@ import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:dubai_screens/src/utils/const.dart';
 import 'package:dubai_screens/src/utils/images.dart';
-import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
 
@@ -21,7 +20,6 @@ class _GetStartedState extends State<GetStarted> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-
         child: Container(
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.fromLTRB(10, 20, 10, 60),
@@ -36,7 +34,7 @@ class _GetStartedState extends State<GetStarted> {
               AuthButton(
                   text: 'Sign In',
                   onTap: () {
-                    push(SignInPage());
+                    push(const SignInPage());
                     // AppNavigation().push(context, const SignInPage());
                   }),
               const SizedBox(
@@ -45,7 +43,7 @@ class _GetStartedState extends State<GetStarted> {
               AuthButton(
                 text: 'Sign Up',
                 onTap: () {
-                  push(SignUpPage());
+                  push(const SignUpPage());
                 },
                 backGroundColor: Colors.white,
                 textColor: AppColors.kPrimary,

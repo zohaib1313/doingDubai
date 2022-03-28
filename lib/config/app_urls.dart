@@ -18,6 +18,7 @@ class AppUrl {
   static var actionBooking = 'action-booking';
   static var getOneHotel = 'get-hotel/';
   static const String recommended_bookings = 'recommended-bookings';
+  static const String bookingUpdate = 'bookings-update/';
 
   //////images//////
   static const String hotelsPicBaseUrl =

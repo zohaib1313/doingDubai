@@ -1,10 +1,10 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/pref_keys.dart';
-import 'package:dubai_screens/model/custom_model_with_hotel_booking.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
 import 'package:dubai_screens/model/my_bookings_model.dart';
 import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +12,7 @@ import 'package:req_fun/req_fun.dart';
 
 import '../../../config/app_urls.dart';
 import '../../../config/keys/response_code.dart';
+import '../pages/inqury/make_inqury.dart';
 
 class BookingsAndConfirmationsBottom extends StatefulWidget {
   const BookingsAndConfirmationsBottom({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _BookingsAndConfirmationsBottomState
   String? _profileImageURL;
 
   bool _isLoading = true;
-  List<HotelAndBookingModel> _customModelBookingHotel = [];
+  List<MyBookingsModel> _allBookings = [];
 
   Future<void> _selectFromDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -91,8 +92,8 @@ class _BookingsAndConfirmationsBottomState
         actions: [
           InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (builder) => ProfilePageBottom()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (builder) => const ProfilePageBottom()));
             },
             child: Padding(
               padding: const EdgeInsets.all(4),
@@ -100,7 +101,7 @@ class _BookingsAndConfirmationsBottomState
                       (_profileImageURL ?? '').isNotEmpty)
                   ? Image.network(
                       "http://dubai.applypressure.co.uk/profile_pics/$_profileImageURL")
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
           ),
         ],
@@ -112,7 +113,7 @@ class _BookingsAndConfirmationsBottomState
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : _customModelBookingHotel.isEmpty
+          : _allBookings.isEmpty
               ? const Center(
                   child: Text('No Booking Found'),
                 )
@@ -127,7 +128,7 @@ class _BookingsAndConfirmationsBottomState
                       height: 25,
                     );
                   },
-                  itemCount: _customModelBookingHotel.length),
+                  itemCount: _allBookings.length),
     );
   }
 
@@ -177,7 +178,19 @@ class _BookingsAndConfirmationsBottomState
 
   Widget getStackItem({required int i}) {
     return InkWell(
-      onTap: () {},
+      onTap: () async {
+        HotelsModel? hotelsModel = await _getHotelOfBooking(_allBookings[i]);
+        if (hotelsModel != null) {
+          await AppNavigation().push(
+              context,
+              MakeInqury(
+                hotelModel: hotelsModel,
+                myBookingsModel: _allBookings[i],
+              ));
+
+          _init();
+        }
+      },
       child: Stack(
         children: [
           Padding(
@@ -205,7 +218,7 @@ class _BookingsAndConfirmationsBottomState
                       child: Column(
                         children: [
                           Text(
-                            _customModelBookingHotel[i].hotelsModel.hotel ?? '',
+                            _allBookings[i].entityType ?? '',
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
@@ -221,7 +234,7 @@ class _BookingsAndConfirmationsBottomState
                                   width: 10,
                                 ),
                                 Text(
-                                    '${_customModelBookingHotel[i].bookingsModel.adults?.toString() ?? ''} Adults')
+                                    '${_allBookings[i].adults?.toString() ?? ''} Adults')
                               ],
                             ),
                           ),
@@ -235,7 +248,7 @@ class _BookingsAndConfirmationsBottomState
                                 width: 10,
                               ),
                               Text(
-                                  '${_customModelBookingHotel[i].bookingsModel.bookDate?.toString() ?? ''}- ${_customModelBookingHotel[i].bookingsModel.bookTime?.toString() ?? ''}')
+                                  '${_allBookings[i].bookDate?.toString() ?? ''}- ${_allBookings[i].bookTime?.toString() ?? ''}')
                             ],
                           ),
                         ],
@@ -252,8 +265,7 @@ class _BookingsAndConfirmationsBottomState
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        (_customModelBookingHotel[i].bookingsModel.confirmed ??
-                                false)
+                        (_allBookings[i].confirmed ?? false)
                             ? 'Confirmed'
                             : 'Pending',
                         style:
@@ -263,11 +275,9 @@ class _BookingsAndConfirmationsBottomState
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        (_customModelBookingHotel[i].bookingsModel.confirmed ??
-                                false)
-                            ? Colors.green
-                            : AppColors.kPrimary,
+                    color: (_allBookings[i].confirmed ?? false)
+                        ? Colors.green
+                        : AppColors.kPrimary,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(12),
                       bottomRight: Radius.circular(12),
@@ -282,14 +292,20 @@ class _BookingsAndConfirmationsBottomState
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                    ) /*Image.network(
                       AppUrl.hotelsPicBaseUrl +
                           (_customModelBookingHotel[i].hotelsModel.imageUrl ??
                               ''),
                       fit: BoxFit.cover,
                       height: 100,
                       width: 100,
-                    ),
+                    )*/
+                    ,
                   )))
         ],
       ),
@@ -297,7 +313,7 @@ class _BookingsAndConfirmationsBottomState
   }
 
   _getMyBookings() async {
-    _customModelBookingHotel.clear();
+    _allBookings.clear();
     _isLoading = true;
     try {
       var response = await _dio.get(
@@ -307,27 +323,21 @@ class _BookingsAndConfirmationsBottomState
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
         var products = responseData['data']['bookings'];
-        print(products.runtimeType);
-        // await Future.forEach(products, (item) async {
-        //   print(item.runtimeType);
-        //   var booking = MyBookingsModel.fromJson(item as Map<String, dynamic>);
-        //   var customModel = await _getHotelOfBooking(booking);
-        //   if (customModel != null) {
-        //     _customModelBookingHotel.add(customModel);
-        //   }
-        // });
 
+        _isLoading = false;
         products.forEach((item) async {
           var booking = MyBookingsModel.fromJson(item as Map<String, dynamic>);
           if (mounted) {
-            var customModel = await _getHotelOfBooking(booking);
+            _allBookings.add(booking);
+            setState(() {});
+            /*var customModel = await _getHotelOfBooking(booking);
             if (customModel != null) {
               _customModelBookingHotel.add(customModel);
               _isLoading = false;
               if (mounted) {
                 setState(() {});
               }
-            }
+            }*/
           } else {
             return;
           }
@@ -367,8 +377,7 @@ class _BookingsAndConfirmationsBottomState
     _getUserData();
   }
 
-  Future<HotelAndBookingModel?> _getHotelOfBooking(
-      MyBookingsModel booking) async {
+  Future<HotelsModel?> _getHotelOfBooking(MyBookingsModel booking) async {
     try {
       var response = await _dio.get(
         path: AppUrl.getOneHotel + booking.entityTypeId.toString(),
@@ -379,8 +388,7 @@ class _BookingsAndConfirmationsBottomState
         var products = responseData['data']['hotel'];
         HotelsModel hotelsModel = HotelsModel.fromJson(products);
 
-        return Future.value(HotelAndBookingModel(
-            bookingsModel: booking, hotelsModel: hotelsModel));
+        return Future.value(hotelsModel);
       } else {
         if (responseData != null && mounted) {
           errorDialog(context, 'Error', responseData['message'],

@@ -1,4 +1,5 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
+import 'package:dubai_screens/model/my_bookings_model.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/confirm_inqury.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
@@ -16,8 +17,10 @@ import '../../../../model/hotels_model.dart';
 
 class SubmitInqury extends StatefulWidget {
   HotelsModel? hotelModel;
+  MyBookingsModel? myBookingsModel;
 
-  SubmitInqury({Key? key, required this.hotelModel}) : super(key: key);
+  SubmitInqury({Key? key, required this.hotelModel, this.myBookingsModel})
+      : super(key: key);
 
   @override
   _SubmitInquryState createState() => _SubmitInquryState();
@@ -25,7 +28,7 @@ class SubmitInqury extends StatefulWidget {
 
 class _SubmitInquryState extends State<SubmitInqury> {
   DateTime? selectedFromDates;
-  int _selectedIndex = -1;
+  int _selectedTimeIndex = -1;
   int _adults = 0;
   int _kids = 0;
   bool _loading = false;
@@ -41,6 +44,10 @@ class _SubmitInquryState extends State<SubmitInqury> {
     _notesTextEditingController.clear();
     _dio = AppDio(context);
     times = widget.hotelModel?.checkins?.split(",").toList() ?? [];
+
+    if (widget.myBookingsModel != null) {
+      setupValuesWithBookingForUpdate(booking: widget.myBookingsModel!);
+    }
   }
 
   @override
@@ -108,16 +115,22 @@ class _SubmitInquryState extends State<SubmitInqury> {
                       hintText: 'Enter Text Here'),
                 )),
             AuthButton(
-                text: 'Submit Inquiry',
+                text: widget.myBookingsModel != null
+                    ? 'Update Inquiry'
+                    : 'Submit Inquiry',
                 textColor: AppColors.blackColor,
                 onTap: () {
-                  print(_selectedIndex.toString());
+                  print(_selectedTimeIndex.toString());
                   print(_adults.toString());
 
                   if (selectedFromDates != null &&
-                      _selectedIndex != -1 &&
+                      _selectedTimeIndex != -1 &&
                       _adults != 0) {
-                    _makeBookings();
+                    if (widget.myBookingsModel != null) {
+                      _updateBooking();
+                    } else {
+                      _makeBookings();
+                    }
                   } else {
                     warningDialog(context, "Warnings", "Fill all fields",
                         closeOnBackPress: true, neutralButtonText: "OK");
@@ -138,7 +151,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
           .map((i) => GestureDetector(
               onTap: () {
                 setState(() {
-                  _selectedIndex = times.indexOf(i);
+                  _selectedTimeIndex = times.indexOf(i);
                 });
               },
               child: Container(
@@ -146,7 +159,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: _selectedIndex == times.indexOf(i)
+                    color: _selectedTimeIndex == times.indexOf(i)
                         ? AppColors.kPrimary
                         : Colors.transparent,
                     border: Border.all(color: AppColors.kPrimary)),
@@ -355,7 +368,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
           "actioned": "0",
           "book_date": DateFormat('yyyy-MM-dd')
               .format(selectedFromDates!) /*"2022-02-21"*/,
-          "book_time": times.elementAt(_selectedIndex),
+          "book_time": times.elementAt(_selectedTimeIndex),
           "adults": _adults.toString(),
           "kids": _kids.toString(),
           "notes": _notesTextEditingController.text,
@@ -379,7 +392,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
             ConfirmationInquiry(
                 hotel: widget.hotelModel,
                 bookingId: (responseData['data']['booking']['id']).toString(),
-                time: times.elementAt(_selectedIndex),
+                time: times.elementAt(_selectedTimeIndex),
                 date: DateFormat('yyyy-MM-dd').format(selectedFromDates!),
                 kids: _kids,
                 adults: _adults));
@@ -413,5 +426,94 @@ class _SubmitInquryState extends State<SubmitInqury> {
 
       // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
     }
+  }
+
+  _updateBooking() async {
+    _loading = true;
+    progressDialog(context,
+        progressDialogType: ProgressDialogType.CIRCULAR,
+        contentWidget: const Text("Please wait..."));
+    // ignore: prefer_typing_uninitialized_variables
+    var responseData;
+
+    try {
+      String? userId = "";
+      await Prefs.getPrefs().then((prefs) {
+        userId = prefs.getInt(PrefKey.ID).toString();
+      });
+      var response = await _dio.put(
+        path: AppUrl.bookingUpdate + widget.myBookingsModel!.id.toString(),
+        data: {
+          "entity_type": "Hotel",
+          "entity_type_id": (widget.hotelModel?.id.toString() ?? "-1"),
+          "user_id": userId ?? '-1',
+          "sent": "1",
+          "seen": "0",
+          "actioned": "0",
+          "book_date": DateFormat('yyyy-MM-dd')
+              .format(selectedFromDates!) /*"2022-02-21"*/,
+          "book_time": times.elementAt(_selectedTimeIndex),
+          "adults": _adults.toString(),
+          "kids": _kids.toString(),
+          "notes": _notesTextEditingController.text,
+        },
+      );
+
+      if (_loading) {
+        pop();
+        _loading = false;
+      }
+
+      var responseStatusCode = response.statusCode;
+      responseData = response.data;
+      print("*******\n");
+      print(responseData);
+      print("*******\n");
+
+      if (responseStatusCode == StatusCode.OK) {
+        infoDialog(context, responseData['message'], 'Booking updated',
+            closeOnBackPress: true, neutralButtonText: "OK");
+      } else {
+        if (responseData != null) {
+          warningDialog(
+              context, responseData['message'], responseData['description'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
+          responseError(context, response);
+        }
+      }
+    } catch (e, s) {
+      if (_loading) {
+        pop();
+        _loading = false;
+      }
+
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      errorDialog(context, "Error", responseData["message"],
+          closeOnBackPress: true, neutralButtonText: "OK");
+
+      // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
+    }
+  }
+
+  void setupValuesWithBookingForUpdate({required MyBookingsModel booking}) {
+    selectedFromDates = DateTime.parse(booking.bookDate!);
+    _kids = booking.kids ?? 0;
+    _adults = booking.adults ?? 0;
+    for (int i = 0; i < times.length; i++) {
+      if (times[i].trim() == booking.bookTime!.trim()) {
+        _selectedTimeIndex = i;
+      }
+    }
+    _notesTextEditingController.text = booking.notes ?? '';
+    setState(() {});
   }
 }

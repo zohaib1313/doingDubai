@@ -12,6 +12,8 @@ import 'package:dubai_screens/src/ui/widgets/decrated_text_field.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:dubai_screens/src/utils/images.dart';
 import 'package:dubai_screens/src/utils/nav.dart';
+import 'package:dubai_screens/widgets/other/bottom_sheet.dart';
+import 'package:dubai_screens/widgets/other/round_button.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
@@ -300,11 +302,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
                 borderRadius: BorderRadius.circular(12)),
             child: InkWell(
               onTap: () {
-                /* AppBottomSheet.appMaterialBottomSheet(context, list: [
+                AppBottomSheet.appMaterialBottomSheet(context, list: [
                   ListTile(
-                    title:
-                        // Text("_____"),
-                        Icon(
+                    title: Icon(
                       Icons.maximize_rounded,
                       size: 40,
                       color: Colors.grey,
@@ -313,10 +313,10 @@ class _BottomHomePageState extends State<BottomHomePage> {
                       pop();
                     },
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Center(
                         child: Text(
-                      "Filter for search",
+                      "Filter",
                       style: TextStyle(fontSize: 20),
                     )),
                   ),
@@ -337,7 +337,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                             setState(() {});
                           },
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         RoundedButton(
                           title: "City",
                           isFilled: isCityBtn,
@@ -349,7 +349,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
                             setState(() {});
                           },
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         RoundedButton(
                           title: "Name",
                           isFilled: isNameBtn,
@@ -361,12 +361,12 @@ class _BottomHomePageState extends State<BottomHomePage> {
                             setState(() {});
                           },
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                       ],
                     ),
                   ),
-                  SizedBox(height: 16)
-                ]);*/
+                  const SizedBox(height: 16)
+                ]);
               },
               child: Image.asset(
                 AppImages.bottomStatsIcon,

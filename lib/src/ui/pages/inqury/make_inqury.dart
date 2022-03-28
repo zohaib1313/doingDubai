@@ -1,3 +1,4 @@
+import 'package:dubai_screens/model/my_bookings_model.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/submit_inqury.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/ui/widgets/stack_images.dart';
@@ -13,7 +14,10 @@ import '../../../../model/hotels_model.dart';
 class MakeInqury extends StatefulWidget {
   HotelsModel? hotelModel;
 
-  MakeInqury({Key? key, required this.hotelModel}) : super(key: key);
+  MyBookingsModel? myBookingsModel;
+
+  MakeInqury({Key? key, required this.hotelModel, this.myBookingsModel})
+      : super(key: key);
 
   @override
   _MakeInquryState createState() => _MakeInquryState();
@@ -78,13 +82,16 @@ class _MakeInquryState extends State<MakeInqury> {
                     Expanded(
                       flex: 2,
                       child: AuthButton(
-                          text: 'Make Inquiry',
+                          text: widget.myBookingsModel != null
+                              ? "Update Booking"
+                              : 'Make Inquiry',
                           textColor: AppColors.blackColor,
                           onTap: () {
                             AppNavigation().push(
                                 context,
                                 SubmitInqury(
                                   hotelModel: widget.hotelModel,
+                                  myBookingsModel: widget.myBookingsModel,
                                 ));
                           }),
                     )
