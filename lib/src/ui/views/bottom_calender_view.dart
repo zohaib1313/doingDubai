@@ -294,7 +294,7 @@ class _BookingsAndConfirmationsBottomState
                     borderRadius: BorderRadius.circular(20),
                     child: Image.asset(
                       'assets/images/logo.png',
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       height: 100,
                       width: 100,
                     ) /*Image.network(
