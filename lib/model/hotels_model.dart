@@ -21,11 +21,13 @@ class HotelsModel {
   String? deletedAt;
   String? description;
   String? rating;
+  String? inquiry_price;
   bool isFavourite = false;
 
   HotelsModel(
       {this.id,
       this.description,
+      this.inquiry_price,
       this.rating,
       this.isFavourite = false,
       this.hotel,
@@ -70,6 +72,7 @@ class HotelsModel {
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
     description = json['description'];
+    inquiry_price = json['inquiry_price'];
     rating = json['rating'];
   }
 
@@ -97,6 +100,7 @@ class HotelsModel {
     data['deleted_at'] = deletedAt;
     data['description'] = description;
     data['rating'] = rating;
+    data['inquiry_price'] = inquiry_price;
 
     return data;
   }

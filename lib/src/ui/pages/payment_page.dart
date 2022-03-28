@@ -98,7 +98,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                   const Spacer(),
                   Text(
-                    '\$40',
+                    "\$ " + (widget.hotel?.inquiry_price ?? 0).toString(),
                     style: TextStyle(
                         color: AppColors.kPrimary,
                         fontSize: 16,
