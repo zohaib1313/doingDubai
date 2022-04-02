@@ -1,9 +1,8 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
-import 'package:dubai_screens/model/my_bookings_model.dart';
-import 'package:dubai_screens/src/ui/pages/inqury/confirm_inqury.dart';
+import 'package:dubai_screens/model/custom_booking_model.dart';
+import 'package:dubai_screens/model/custom_inquiry_model.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
-import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,13 +12,15 @@ import '../../../../config/app_urls.dart';
 import '../../../../config/dio/functions.dart';
 import '../../../../config/keys/pref_keys.dart';
 import '../../../../config/keys/response_code.dart';
-import '../../../../model/hotels_model.dart';
+import '../../../utils/nav.dart';
+import 'confirm_inqury.dart';
 
 class SubmitInqury extends StatefulWidget {
-  HotelsModel? hotelModel;
-  MyBookingsModel? myBookingsModel;
+  CustomInquiryModel? customInquiryModel;
+  CustomBookingModel? myBookingsModel;
 
-  SubmitInqury({Key? key, required this.hotelModel, this.myBookingsModel})
+  SubmitInqury(
+      {Key? key, required this.customInquiryModel, this.myBookingsModel})
       : super(key: key);
 
   @override
@@ -43,7 +44,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
     super.initState();
     _notesTextEditingController.clear();
     _dio = AppDio(context);
-    times = widget.hotelModel?.checkins?.split(",").toList() ?? [];
+    times = widget.customInquiryModel?.checkins?.split(",").toList() ?? [];
 
     if (widget.myBookingsModel != null) {
       setupValuesWithBookingForUpdate(booking: widget.myBookingsModel!);
@@ -65,7 +66,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
         backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(
-          widget.hotelModel?.hotel ?? '',
+          widget.customInquiryModel?.name ?? '',
           style: TextStyle(color: AppColors.kPrimary),
         ),
         elevation: 0,
@@ -81,11 +82,9 @@ class _SubmitInquryState extends State<SubmitInqury> {
               height: 50,
               color: AppColors.whiteColor,
             ),
-            _buildHeadText(text: 'Select Guest'),
-            _buildAdultAndKids(),
-            Divider(
-              height: 50,
-              color: AppColors.whiteColor,
+            Visibility(
+              visible: widget.customInquiryModel?.adults != null,
+              child: _buildAdultAndKids(),
             ),
             _buildHeadText(text: 'Select Check-in Time'),
             _buildTiming(),
@@ -120,12 +119,14 @@ class _SubmitInquryState extends State<SubmitInqury> {
                     : 'Submit Inquiry',
                 textColor: AppColors.blackColor,
                 onTap: () {
-                  print(_selectedTimeIndex.toString());
-                  print(_adults.toString());
+                  if (selectedFromDates != null && _selectedTimeIndex != -1) {
+                    if (widget.customInquiryModel?.adults != null &&
+                        _adults == 0) {
+                      warningDialog(context, "Warnings", "Select Adults",
+                          closeOnBackPress: true, neutralButtonText: "OK");
+                      return;
+                    }
 
-                  if (selectedFromDates != null &&
-                      _selectedTimeIndex != -1 &&
-                      _adults != 0) {
                     if (widget.myBookingsModel != null) {
                       _updateBooking();
                     } else {
@@ -223,71 +224,82 @@ class _SubmitInquryState extends State<SubmitInqury> {
   }
 
   Widget _buildAdultAndKids() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                const Text(
-                  'Adults',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeadText(text: 'Select Guest'),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    const Text(
+                      'Adults',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    _buildValueContainer(
+                        decrementTap: () {
+                          if (_adults > 0) {
+                            _adults--;
+                            setState(() {});
+                          }
+                        },
+                        incrementTap: () {
+                          _adults++;
+                          setState(() {});
+                        },
+                        val: _adults.toStringAsFixed(0)),
+                  ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                _buildValueContainer(
-                    decrementTap: () {
-                      if (_adults > 0) {
-                        _adults--;
-                        setState(() {});
-                      }
-                    },
-                    incrementTap: () {
-                      _adults++;
-                      setState(() {});
-                    },
-                    val: _adults.toStringAsFixed(0)),
-              ],
-            ),
-          ),
-          const Spacer(),
-          Visibility(
-            visible: (widget.hotelModel?.adults == 1) ||
-                (widget.hotelModel?.adults == true),
-            child: Expanded(
-              child: Column(
-                children: [
-                  const Text(
-                    'Kids',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  _buildValueContainer(
-                      decrementTap: () {
-                        if (_kids > 0) {
-                          setState(() {
-                            _kids--;
-                          });
-                        }
-                      },
-                      incrementTap: () {
-                        setState(() {
-                          _kids++;
-                        });
-                      },
-                      val: _kids.toString()),
-                ],
               ),
-            ),
-          )
-        ],
-      ),
+              const Spacer(),
+              Visibility(
+                visible: (widget.customInquiryModel?.adults == true) ||
+                    (widget.customInquiryModel?.adults == 1),
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Kids',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      _buildValueContainer(
+                          decrementTap: () {
+                            if (_kids > 0) {
+                              setState(() {
+                                _kids--;
+                              });
+                            }
+                          },
+                          incrementTap: () {
+                            setState(() {
+                              _kids++;
+                            });
+                          },
+                          val: _kids.toString()),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Divider(
+          height: 50,
+          color: AppColors.whiteColor,
+        ),
+      ],
     );
   }
 
@@ -361,7 +373,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
         path: AppUrl.bookingsCreate,
         data: {
           "entity_type": "Hotel",
-          "entity_type_id": (widget.hotelModel?.id.toString() ?? "-1"),
+          "entity_type_id": (widget.customInquiryModel?.id.toString() ?? "-1"),
           "user_id": userId ?? '-1',
           "sent": "1",
           "seen": "0",
@@ -390,13 +402,12 @@ class _SubmitInquryState extends State<SubmitInqury> {
         AppNavigation().pushReplacement(
             context,
             ConfirmationInquiry(
-                hotel: widget.hotelModel,
+                customModel: widget.customInquiryModel,
                 bookingId: (responseData['data']['booking']['id']).toString(),
                 time: times.elementAt(_selectedTimeIndex),
                 date: DateFormat('yyyy-MM-dd').format(selectedFromDates!),
                 kids: _kids,
                 adults: _adults));
-        // replace(PersonalityTestPage());
       } else {
         if (responseData != null) {
           warningDialog(
@@ -445,7 +456,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
         path: AppUrl.bookingUpdate + widget.myBookingsModel!.id.toString(),
         data: {
           "entity_type": "Hotel",
-          "entity_type_id": (widget.hotelModel?.id.toString() ?? "-1"),
+          "entity_type_id": (widget.customInquiryModel?.id.toString() ?? "-1"),
           "user_id": userId ?? '-1',
           "sent": "1",
           "seen": "0",
@@ -504,7 +515,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
     }
   }
 
-  void setupValuesWithBookingForUpdate({required MyBookingsModel booking}) {
+  void setupValuesWithBookingForUpdate({required CustomBookingModel booking}) {
     selectedFromDates = DateTime.parse(booking.bookDate!);
     _kids = booking.kids ?? 0;
     _adults = booking.adults ?? 0;
@@ -513,7 +524,7 @@ class _SubmitInquryState extends State<SubmitInqury> {
         _selectedTimeIndex = i;
       }
     }
-    _notesTextEditingController.text = booking.notes ?? '';
+    // _notesTextEditingController.text = booking ?? '';
     setState(() {});
   }
 }

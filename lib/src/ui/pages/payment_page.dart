@@ -1,14 +1,14 @@
+import 'package:dubai_screens/model/custom_inquiry_model.dart';
 import 'package:dubai_screens/src/ui/pages/home_page.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/images.dart';
 import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 
-import '../../../model/hotels_model.dart';
 import '../../utils/colors.dart';
 
 class PaymentPage extends StatefulWidget {
-  HotelsModel? hotel;
+  CustomInquiryModel? customModel;
   int adults;
   int kids;
   String date;
@@ -17,7 +17,7 @@ class PaymentPage extends StatefulWidget {
 
   PaymentPage(
       {Key? key,
-      required this.hotel,
+      required this.customModel,
       required this.adults,
       required this.kids,
       required this.date,
@@ -77,7 +77,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.hotel?.hotel ?? '',
+                        widget.customModel?.name ?? '',
                         style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Text(
-                          widget.hotel?.description ?? '',
+                          widget.customModel?.description ?? '',
                           style: const TextStyle(color: Colors.grey),
                         ),
                       ),
@@ -98,7 +98,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                   const Spacer(),
                   Text(
-                    "\$ " + (widget.hotel?.inquiry_price ?? 0).toString(),
+                    "${widget.customModel?.price.toString()} " +
+                        (widget.customModel?.inquiry_price ?? 0).toString(),
                     style: TextStyle(
                         color: AppColors.kPrimary,
                         fontSize: 16,

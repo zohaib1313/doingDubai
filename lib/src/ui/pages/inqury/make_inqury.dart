@@ -1,22 +1,21 @@
-import 'package:dubai_screens/model/my_bookings_model.dart';
+import 'package:dubai_screens/model/custom_booking_model.dart';
+import 'package:dubai_screens/model/custom_inquiry_model.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/submit_inqury.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/ui/widgets/stack_images.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:dubai_screens/src/utils/images.dart';
-import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
 
-import '../../../../config/app_urls.dart';
-import '../../../../model/hotels_model.dart';
+import '../../../utils/nav.dart';
 
 class MakeInqury extends StatefulWidget {
-  HotelsModel? hotelModel;
+  CustomInquiryModel? customModel;
 
-  MyBookingsModel? myBookingsModel;
+  CustomBookingModel? myBookingsModel;
 
-  MakeInqury({Key? key, required this.hotelModel, this.myBookingsModel})
+  MakeInqury({Key? key, required this.customModel, this.myBookingsModel})
       : super(key: key);
 
   @override
@@ -24,12 +23,14 @@ class MakeInqury extends StatefulWidget {
 }
 
 class _MakeInquryState extends State<MakeInqury> {
-  List<String>? chips = [];
+  List<String>? chips;
 
   @override
   void initState() {
     super.initState();
-    chips = widget.hotelModel?.amenities?.split(",").toList();
+    if (widget.customModel?.amenities != '') {
+      chips = widget.customModel?.amenities?.split(",").toList();
+    }
   }
 
   @override
@@ -50,7 +51,7 @@ class _MakeInquryState extends State<MakeInqury> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 20),
               child: Text(
-                widget.hotelModel?.address ?? '',
+                widget.customModel?.address ?? '',
                 style: const TextStyle(color: Colors.grey, fontSize: 16),
               ),
             ),
@@ -77,7 +78,7 @@ class _MakeInquryState extends State<MakeInqury> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Text(widget.hotelModel?.price ?? ''),
+                      child: Text(widget.customModel?.price ?? ''),
                     ),
                     Expanded(
                       flex: 2,
@@ -90,7 +91,7 @@ class _MakeInquryState extends State<MakeInqury> {
                             AppNavigation().push(
                                 context,
                                 SubmitInqury(
-                                  hotelModel: widget.hotelModel,
+                                  customInquiryModel: widget.customModel,
                                   myBookingsModel: widget.myBookingsModel,
                                 ));
                           }),
@@ -108,7 +109,7 @@ class _MakeInquryState extends State<MakeInqury> {
     return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 40),
         child: Text(
-          widget.hotelModel?.description ?? '',
+          widget.customModel?.description ?? '',
           style: TextStyle(
             color: AppColors.whiteColor,
             height: 1.5,
@@ -124,18 +125,16 @@ class _MakeInquryState extends State<MakeInqury> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: widget.hotelModel!.id! == -1
+              image: (widget.customModel?.id ?? -1) == -1
 
                   ///setting temporary
                   ? Image.asset(
-                      widget.hotelModel!.imageUrl!,
+                      widget.customModel?.imageUrl ?? '',
                       width: 120,
                       height: 150,
                       fit: BoxFit.cover,
                     ).image
-                  : Image.network(AppUrl.hotelsPicBaseUrl +
-                          (widget.hotelModel?.imageUrl ?? ''))
-                      .image,
+                  : Image.network((widget.customModel?.imageUrl ?? '')).image,
               fit: BoxFit.cover),
           borderRadius: BorderRadius.circular(20)),
       child: Align(
@@ -155,13 +154,15 @@ class _MakeInquryState extends State<MakeInqury> {
       children: [
         Expanded(
           child: Text(
-            widget.hotelModel?.hotel ?? '-',
+            widget.customModel?.name ?? '-',
             style: const TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
         Row(
           children: [
-            for (int i = 0; i < (widget.hotelModel?.rating ?? '0').toInt(); i++)
+            for (int i = 0;
+                i < (widget.customModel?.rating ?? '0').toInt();
+                i++)
               Padding(
                 padding: const EdgeInsets.only(left: 3),
                 child: Icon(

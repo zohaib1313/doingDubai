@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   FlatButton(
-                    child: Text('Yes, exit'),
+                    child: const Text('Yes, exit'),
                     onPressed: () {
                       Navigator.of(context).pop(true);
                     },

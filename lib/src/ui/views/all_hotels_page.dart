@@ -2,11 +2,13 @@ import 'package:dubai_screens/config/app_urls.dart';
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
-import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
-import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
+
+import '../../../model/custom_inquiry_model.dart';
+import '../../utils/nav.dart';
+import '../pages/inqury/make_inqury.dart';
 
 class AllHotelsPage extends StatefulWidget {
   const AllHotelsPage({Key? key}) : super(key: key);
@@ -71,9 +73,29 @@ class _AllHotelsPageState extends State<AllHotelsPage> {
                     itemBuilder: (context, index) {
                       var item = _myHotelsList[index];
                       return GestureDetector(
-                        onTap: () {
-                          AppNavigation()
-                              .push(context, MakeInqury(hotelModel: item));
+                        onTap: () async {
+                          var hotelsModel = item;
+                          await AppNavigation().push(
+                              context,
+                              MakeInqury(
+                                customModel: CustomInquiryModel(
+                                  id: hotelsModel.id,
+                                  imageUrl: AppUrl.hotelsPicBaseUrl +
+                                      (hotelsModel.imageUrl ?? ''),
+                                  key: 'hotel',
+                                  name: hotelsModel.hotel,
+                                  amenities: hotelsModel.amenities,
+                                  adults: hotelsModel.adults,
+                                  checkins: hotelsModel.checkins,
+                                  address: hotelsModel.address,
+                                  description: hotelsModel.description,
+                                  dressCode: hotelsModel.dressCode,
+                                  rating: hotelsModel.rating,
+                                  menuOptions: hotelsModel.menuOptions,
+                                  openingHours: hotelsModel.openingHours,
+                                  price: hotelsModel.price,
+                                ),
+                              ));
                         },
                         child: Padding(
                             padding: const EdgeInsets.only(

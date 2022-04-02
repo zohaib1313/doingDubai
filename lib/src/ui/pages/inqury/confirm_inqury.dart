@@ -1,4 +1,4 @@
-import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/network_calls.dart';
 import 'package:dubai_screens/src/ui/pages/home_page.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +7,14 @@ import '../../../../config/app_urls.dart';
 import '../../../../config/dio/app_dio.dart';
 import '../../../../config/dio/functions.dart';
 import '../../../../config/keys/response_code.dart';
+import '../../../../model/custom_inquiry_model.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/nav.dart';
 import '../../widgets/buttons.dart';
 import '../payment_page.dart';
 
 class ConfirmationInquiry extends StatefulWidget {
-  HotelsModel? hotel;
+  CustomInquiryModel? customModel;
   int adults;
   int kids;
   String date;
@@ -24,7 +25,7 @@ class ConfirmationInquiry extends StatefulWidget {
   ConfirmationInquiry({
     Key? key,
     required this.bookingId,
-    required this.hotel,
+    required this.customModel,
     required this.date,
     required this.time,
     this.adults = 0,
@@ -47,87 +48,93 @@ class _ConfirmationInquiryState extends State<ConfirmationInquiry> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () {
+        return Future.value(NetworkCalls.showConfirmExit(context));
+      },
+      child: Scaffold(
           backgroundColor: Colors.black,
-          centerTitle: true,
-          title: Text(
-            widget.hotel?.hotel ?? '',
-            style: TextStyle(color: AppColors.kPrimary),
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            centerTitle: true,
+            title: Text(
+              widget.customModel?.name ?? '',
+              style: TextStyle(color: AppColors.kPrimary),
+            ),
+            elevation: 0,
+            iconTheme: IconThemeData(color: AppColors.kPrimary),
           ),
-          elevation: 0,
-          iconTheme: IconThemeData(color: AppColors.kPrimary),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Please confirm or decline the secured booking information for ${widget.hotel?.hotel ?? ''} for ${widget.adults.toString()} Adults and ${widget.kids.toString()} Children On ${widget.date} at  ${widget.time}.',
-                style: TextStyle(
-                    height: 1.5, color: AppColors.kPrimary, fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: 80,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    child: Container(
-                      padding: const EdgeInsets.all(25),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isTrue ? Colors.green : AppColors.kPrimary),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 50,
-                      ),
-                    ),
-                    onTap: () {
-                      isTrue = !isTrue;
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(
-                    width: 50,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        _changeBookingStatus(
-                            0); //1: Secured; 0: Declined; 2: Cancelled
-                      },
+          body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Please confirm or decline the secured booking information for ${widget.customModel?.name ?? ''} ${getValue()} On ${widget.date} at  ${widget.time}.',
+                  style: TextStyle(
+                      height: 1.5, color: AppColors.kPrimary, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 80,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
                       child: Container(
                         padding: const EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: AppColors.kPrimary),
+                            shape: BoxShape.circle,
+                            color: isTrue ? Colors.green : AppColors.kPrimary),
                         child: const Icon(
-                          Icons.clear,
+                          Icons.check,
                           color: Colors.white,
                           size: 50,
                         ),
-                      ))
-                ],
-              ),
-              const Spacer(),
-              isTrue
-                  ? AuthButton(
-                      text: 'Make Downpayment',
+                      ),
                       onTap: () {
-                        _changeBookingStatus(
-                            1); //1: Secured; 0: Declined; 2: Cancelled
-                      })
-                  : const SizedBox(),
-            ],
-          ),
-        ));
+                        isTrue = !isTrue;
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(
+                      width: 50,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          _changeBookingStatus(
+                              0); //1: Secured; 0: Declined; 2: Cancelled
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(25),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.kPrimary),
+                          child: const Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                            size: 50,
+                          ),
+                        ))
+                  ],
+                ),
+                const Spacer(),
+                isTrue
+                    ? AuthButton(
+                        text: 'Make Downpayment',
+                        onTap: () {
+                          _changeBookingStatus(
+                              1); //1: Secured; 0: Declined; 2: Cancelled
+                        })
+                    : const SizedBox(),
+              ],
+            ),
+          )),
+    );
   }
 
   Future<void> _changeBookingStatus(int status) async {
@@ -147,13 +154,13 @@ class _ConfirmationInquiryState extends State<ConfirmationInquiry> {
       if (status == 0) {
         AppNavigation().pushReplacement(context, HomePage(currentIndex: 2));
       } else if (status == 1) {
-        AppNavigation().pushReplacement(
+        AppNavigation().push(
             context,
             PaymentPage(
                 bookingId: widget.bookingId,
                 time: widget.time,
                 adults: widget.adults,
-                hotel: widget.hotel,
+                customModel: widget.customModel,
                 date: widget.date,
                 kids: widget.kids));
       }
@@ -186,6 +193,14 @@ class _ConfirmationInquiryState extends State<ConfirmationInquiry> {
           closeOnBackPress: true, neutralButtonText: "OK");
 
       // errorDialog(context, "Error", "Something went wrong please try again later", closeOnBackPress: true, neutralButtonText: "OK");
+    }
+  }
+
+  String getValue() {
+    if (widget.customModel?.adults != null) {
+      return 'for ${widget.adults.toString()} Adults and ${widget.kids.toString()} Children';
+    } else {
+      return '';
     }
   }
 }

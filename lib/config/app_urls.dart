@@ -23,4 +23,19 @@ class AppUrl {
   //////images//////
   static const String hotelsPicBaseUrl =
       'http://dubai.applypressure.co.uk/images/hotelpics/';
+
+  static const String restaurantPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/restaurantpics/';
+
+  static const String eventPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/eventpics/';
+
+  static const String clubPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/clubpics/';
+
+  static const String transportPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/transportpics/';
+
+  static const String landMarkPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/landmarkpics/';
 }
