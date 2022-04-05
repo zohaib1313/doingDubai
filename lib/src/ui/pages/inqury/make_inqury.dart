@@ -1,37 +1,36 @@
-import 'package:doingdubai/src/ui/pages/inqury/submit_inqury.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/src/ui/widgets/stack_images.dart';
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/images.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/model/custom_booking_model.dart';
+import 'package:dubai_screens/model/custom_inquiry_model.dart';
+import 'package:dubai_screens/src/ui/pages/inqury/submit_inqury.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/src/ui/widgets/stack_images.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/images.dart';
 import 'package:flutter/material.dart';
+import 'package:req_fun/req_fun.dart';
 
-import '../../../../config/app_urls.dart';
-import '../../../../model/hotels_model.dart';
+import '../../../utils/nav.dart';
 
 class MakeInqury extends StatefulWidget {
-  HotelsModel? hotelModel;
+  CustomInquiryModel? customModel;
 
-  MakeInqury({Key? key, required this.hotelModel}) : super(key: key);
+  CustomBookingModel? myBookingsModel;
+
+  MakeInqury({Key? key, required this.customModel, this.myBookingsModel})
+      : super(key: key);
 
   @override
   _MakeInquryState createState() => _MakeInquryState();
 }
 
 class _MakeInquryState extends State<MakeInqury> {
-  /*[
-    'Vegan',
-    'Cocktails',
-    'Wifi',
-    'Open',
-    'Breakfast',
-  ];*/
-  List<String>? chips = [];
+  List<String>? chips;
 
   @override
   void initState() {
     super.initState();
-    chips = widget.hotelModel?.amenities?.split(",").toList();
+    if (widget.customModel?.amenities != '') {
+      chips = widget.customModel?.amenities?.split(",").toList();
+    }
   }
 
   @override
@@ -50,15 +49,18 @@ class _MakeInquryState extends State<MakeInqury> {
           children: [
             _buildStarRow(),
             Padding(
-              padding: EdgeInsets.only(top: 5, bottom: 20),
+              padding: const EdgeInsets.only(top: 5, bottom: 20),
               child: Text(
-                widget.hotelModel?.address ?? '',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
+                widget.customModel?.address ?? '',
+                style: const TextStyle(color: Colors.grey, fontSize: 16),
               ),
             ),
             _buildImageContainer(),
             _buildChipsList(),
-            des(),
+            Text(
+              'Description',
+              style: TextStyle(color: AppColors.kPrimary, fontSize: 18),
+            ),
             _buildDescriptionText(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,20 +76,23 @@ class _MakeInquryState extends State<MakeInqury> {
                 padding: const EdgeInsets.only(top: 30),
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 1,
-                      child: Text('\£'),
+                      child: Text(widget.customModel?.price ?? ''),
                     ),
                     Expanded(
                       flex: 2,
                       child: AuthButton(
-                          text: 'Make Inquiry',
+                          text: widget.myBookingsModel != null
+                              ? "Update Booking"
+                              : 'Make Inquiry',
                           textColor: AppColors.blackColor,
                           onTap: () {
                             AppNavigation().push(
                                 context,
                                 SubmitInqury(
-                                  hotelModel: widget.hotelModel,
+                                  customInquiryModel: widget.customModel,
+                                  myBookingsModel: widget.myBookingsModel,
                                 ));
                           }),
                     )
@@ -102,9 +107,9 @@ class _MakeInquryState extends State<MakeInqury> {
 
   Widget _buildDescriptionText() {
     return Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 40),
+        padding: const EdgeInsets.only(top: 10, bottom: 40),
         child: Text(
-          'A chic, oriental-inspired restaurant and bar, KOYO captures the sights and sounds of the Japanese high life in the heart of the tranquil Dubai Marina, UAE. Combining modern fine-dining with traditional kabuki-style Japanese culture, the vibe-dining hotspot, located in the Intercontin',
+          widget.customModel?.description ?? '',
           style: TextStyle(
             color: AppColors.whiteColor,
             height: 1.5,
@@ -120,18 +125,16 @@ class _MakeInquryState extends State<MakeInqury> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: widget.hotelModel!.id! == -1
+              image: (widget.customModel?.id ?? -1) == -1
 
                   ///setting temporary
                   ? Image.asset(
-                      widget.hotelModel!.imageUrl!,
+                      widget.customModel?.imageUrl ?? '',
                       width: 120,
                       height: 150,
                       fit: BoxFit.cover,
                     ).image
-                  : Image.network(AppUrl.imageBaseUrl +
-                          (widget.hotelModel?.imageUrl ?? ''))
-                      .image,
+                  : Image.network((widget.customModel?.imageUrl ?? '')).image,
               fit: BoxFit.cover),
           borderRadius: BorderRadius.circular(20)),
       child: Align(
@@ -146,25 +149,20 @@ class _MakeInquryState extends State<MakeInqury> {
     );
   }
 
-  Widget des() {
-    return Text(
-      'Description',
-      style: TextStyle(color: AppColors.kPrimary, fontSize: 18),
-    );
-  }
-
   Widget _buildStarRow() {
     return Row(
       children: [
         Expanded(
           child: Text(
-            widget.hotelModel?.hotel ?? '-',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            widget.customModel?.name ?? '-',
+            style: const TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
         Row(
           children: [
-            for (int i = 0; i < 5; i++)
+            for (int i = 0;
+                i < (widget.customModel?.rating ?? '0').toInt();
+                i++)
               Padding(
                 padding: const EdgeInsets.only(left: 3),
                 child: Icon(

@@ -1,13 +1,29 @@
-import 'package:doingdubai/src/ui/pages/home_page.dart';
-import 'package:doingdubai/src/ui/widgets/buttons.dart';
-import 'package:doingdubai/src/utils/images.dart';
-import 'package:doingdubai/src/utils/nav.dart';
+import 'package:dubai_screens/model/custom_inquiry_model.dart';
+import 'package:dubai_screens/src/ui/pages/home_page.dart';
+import 'package:dubai_screens/src/ui/widgets/buttons.dart';
+import 'package:dubai_screens/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({Key? key}) : super(key: key);
+  CustomInquiryModel? customModel;
+  int adults;
+  int kids;
+  String date;
+  String time;
+  String bookingId;
+
+  PaymentPage(
+      {Key? key,
+      required this.customModel,
+      required this.adults,
+      required this.kids,
+      required this.date,
+      required this.time,
+      required this.bookingId})
+      : super(key: key);
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -60,29 +76,30 @@ class _PaymentPageState extends State<PaymentPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'KOYO Brunch',
-                        style: TextStyle(
+                      Text(
+                        widget.customModel?.name ?? '',
+                        style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Text(
-                          'Brunch',
-                          style: TextStyle(color: Colors.grey),
+                          widget.customModel?.description ?? '',
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                       Text(
-                        '04 Feb 2022 - 7PM',
+                        '${widget.date} ${widget.time}',
                         style: TextStyle(color: AppColors.kPrimary),
                       ),
                     ],
                   ),
                   const Spacer(),
                   Text(
-                    '\$40',
+                    "${widget.customModel?.price.toString()} " +
+                        (widget.customModel?.inquiry_price ?? 0).toString(),
                     style: TextStyle(
                         color: AppColors.kPrimary,
                         fontSize: 16,

@@ -1,5 +1,5 @@
-import 'package:doingdubai/src/utils/colors.dart';
-import 'package:doingdubai/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/images.dart';
 import 'package:flutter/material.dart';
 
 class StackImages extends StatelessWidget {

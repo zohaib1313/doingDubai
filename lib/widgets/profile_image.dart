@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:doingdubai/src/utils/images.dart';
+import 'package:dubai_screens/src/utils/images.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

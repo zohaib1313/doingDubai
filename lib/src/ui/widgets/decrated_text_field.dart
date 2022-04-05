@@ -1,5 +1,7 @@
-import 'package:doingdubai/src/utils/colors.dart';
+import 'package:dubai_screens/src/utils/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DecoratedTextField extends StatefulWidget {
   final String hintText;
@@ -15,7 +17,8 @@ class DecoratedTextField extends StatefulWidget {
       this.obscure = false,
       this.prefix,
       required this.controller,
-      required this.hintText, this.validator})
+      required this.hintText,
+      this.validator})
       : super(key: key);
 
   @override
@@ -70,6 +73,7 @@ class SearchField extends StatefulWidget {
   final IconData? prefix;
   final bool? obscure;
   final Function(String)? onChange;
+  final Function(String?)? onSaved;
   final TextEditingController controller;
   final FormFieldValidator<String>? validator;
   final TextInputType? textInputType;
@@ -80,7 +84,10 @@ class SearchField extends StatefulWidget {
       this.obscure = false,
       this.prefix,
       required this.controller,
-      required this.hintText, this.validator, this.onChange})
+      required this.hintText,
+      this.onSaved,
+      this.validator,
+      this.onChange})
       : super(key: key);
 
   @override
@@ -101,12 +108,14 @@ class _SearchFieldState extends State<SearchField> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: TextFormField(
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
           scrollPadding: const EdgeInsets.all(150),
           cursorColor: AppColors.kPrimary,
           obscureText: widget.obscure!,
           onChanged: widget.onChange,
+          onFieldSubmitted: widget.onSaved,
           controller: widget.controller,
+          textInputAction: TextInputAction.search,
           keyboardType: widget.textInputType,
           decoration: InputDecoration(
               border: InputBorder.none,

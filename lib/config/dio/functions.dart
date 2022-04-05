@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:doingdubai/config/keys/response_code.dart';
+import 'package:dubai_screens/config/keys/response_code.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/cupertino.dart';
 
