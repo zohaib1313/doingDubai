@@ -44,6 +44,7 @@ dependencies:
   image_cropper: ^1.5.0
   cached_network_image: ^3.0.0
   flutter_svg:
+  flutter_stripe: ^2.4.0
 
 
 dev_dependencies:

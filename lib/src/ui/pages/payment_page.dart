@@ -1,9 +1,12 @@
 import 'package:dubai_screens/model/custom_inquiry_model.dart';
+import 'package:dubai_screens/repo/stripe_repo.dart';
 import 'package:dubai_screens/src/ui/pages/home_page.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/utils/images.dart';
 import 'package:dubai_screens/src/utils/nav.dart';
+import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../../utils/colors.dart';
 
@@ -49,6 +52,40 @@ class _PaymentPageState extends State<PaymentPage> {
     },
   ];
 
+  late String secretKey, pubKey;
+  bool isInProgress = false;
+  late Map<String, dynamic> paymentIntentData;
+
+  @override
+  void initState() {
+    _getStripeKey();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  _getStripeKey() async {
+    if (mounted) {
+      setState(() {
+        isInProgress = true;
+      });
+    }
+
+    await StripeRepo.stripeInfo().then((response) {
+      pubKey = response['data']['publish'];
+    });
+
+    if (mounted) {
+      setState(() {
+        isInProgress = false;
+      });
+    }
+
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,53 +161,132 @@ class _PaymentPageState extends State<PaymentPage> {
                   )
                 ],
               ),
-              Column(
-                children: List<Widget>.generate(cards.length, (index) {
-                  return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: AppColors.kPrimary),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: ListTile(
-                        leading: Image.asset(
-                          cards[index]['cardImage'] ?? '',
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = index;
-                          });
-                        },
-                        subtitle: Text(cards[index]['cardNumber'] ?? '',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
-                        title: Text(
-                          cards[index]['cardName'] ?? '',
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        trailing: _selectedIndex == index
-                            ? Icon(
-                                Icons.check_circle,
-                                color: AppColors.kPrimary,
-                              )
-                            : const Icon(Icons.circle_outlined),
-                      ));
-                }),
-              ),
+              // Column(
+              //   children: List<Widget>.generate(cards.length, (index) {
+              //     return Container(
+              //         margin: const EdgeInsets.symmetric(vertical: 10),
+              //         padding: const EdgeInsets.all(2),
+              //         decoration: BoxDecoration(
+              //             color: Colors.white,
+              //             border: Border.all(color: AppColors.kPrimary),
+              //             borderRadius: BorderRadius.circular(10)),
+              //         child: ListTile(
+              //           leading: Image.asset(
+              //             cards[index]['cardImage'] ?? '',
+              //           ),
+              //           onTap: () {
+              //             setState(() {
+              //               _selectedIndex = index;
+              //             });
+              //           },
+              //           subtitle: Text(cards[index]['cardNumber'] ?? '',
+              //               style: const TextStyle(
+              //                   fontSize: 12, color: Colors.grey)),
+              //           title: Text(
+              //             cards[index]['cardName'] ?? '',
+              //             style: const TextStyle(
+              //                 fontSize: 16,
+              //                 fontWeight: FontWeight.bold,
+              //                 color: Colors.black),
+              //           ),
+              //           trailing: _selectedIndex == index
+              //               ? Icon(
+              //                   Icons.check_circle,
+              //                   color: AppColors.kPrimary,
+              //                 )
+              //               : const Icon(Icons.circle_outlined),
+              //         ));
+              //   }),
+              // ),
               const SizedBox(
                 height: 50,
               ),
               AuthButton(
                   text: "Secure Reservation",
                   onTap: () {
-                    AppNavigation().push(context, HomePage(currentIndex: 2));
+                    _initiateThePayment(int.parse(widget.bookingId));
                   })
             ],
           ),
         ));
   }
+
+
+  _initiateThePayment(int? bookingId) async {
+    if (mounted) {
+      setState(() {
+        isInProgress = true;
+      });
+    }
+
+    await StripeRepo().payForMyBooking(bookingId!).then((response) {
+      //print(response);
+      paymentIntentData = response.data;
+    });
+print(paymentIntentData);
+    Stripe.publishableKey = pubKey;
+    Stripe.merchantIdentifier = 'DoingDubai';
+    await Stripe.instance.applySettings();
+
+    await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntentData['client_secret'],
+            applePay: true,
+            googlePay: true,
+            style: ThemeMode.dark,
+            merchantCountryCode: 'UK',
+            merchantDisplayName: 'DoingDubai'
+        ));
+
+    setState(() {});
+
+    displaySheet();
+
+    if (mounted) {
+      setState(() {
+        isInProgress = false;
+      });
+    }
+
+  }
+
+  Future<void> displaySheet() async {
+    //try {
+    await Stripe.instance.presentPaymentSheet();
+    setState(() {
+      _updatePayment(paymentIntentData['id']);
+      paymentIntentData.clear();
+
+      AppNavigation().push(context, HomePage(currentIndex: 2));
+    });
+    // } catch (e){
+    //   errorDialog(
+    //       context, 'Error.', 'Failed to make the payment.',
+    //       closeOnBackPress: true, neutralButtonText: "OK");
+    // }
+  }
+
+  _updatePayment(String paymentID) async {
+    if (mounted) {
+      setState(() {
+        isInProgress = true;
+      });
+    }
+
+    await StripeRepo.confirmPayment(widget.customModel?.id,paymentID).then((response) {
+      successDialog(
+          context, 'Payment Received', 'Booking payment received.',
+          closeOnBackPress: true, neutralButtonText: "OK");
+    });
+
+    setState(() {});
+
+    if (mounted) {
+      setState(() {
+        isInProgress = false;
+      });
+    }
+
+  }
+
 }

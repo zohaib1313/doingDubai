@@ -378,12 +378,12 @@ class _SubmitInquryState extends State<SubmitInqury> {
           "sent": "1",
           "seen": "0",
           "actioned": "0",
-          "book_date": DateFormat('yyyy-MM-dd')
-              .format(selectedFromDates!) /*"2022-02-21"*/,
+          "book_date": DateFormat('yyyy-MM-dd').format(selectedFromDates!) /*"2022-02-21"*/,
           "book_time": times.elementAt(_selectedTimeIndex),
           "adults": _adults.toString(),
           "kids": _kids.toString(),
           "notes": _notesTextEditingController.text,
+          "inquiry_price": widget.customInquiryModel?.inquiry_price,
         },
       );
 
@@ -407,7 +407,8 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 time: times.elementAt(_selectedTimeIndex),
                 date: DateFormat('yyyy-MM-dd').format(selectedFromDates!),
                 kids: _kids,
-                adults: _adults));
+                adults: _adults
+            ));
       } else {
         if (responseData != null) {
           warningDialog(
