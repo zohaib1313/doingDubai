@@ -223,7 +223,6 @@ class _PaymentPageState extends State<PaymentPage> {
       //print(response);
       paymentIntentData = response.data;
     });
-print(paymentIntentData);
     Stripe.publishableKey = pubKey;
     Stripe.merchantIdentifier = 'DoingDubai';
     await Stripe.instance.applySettings();
@@ -251,7 +250,7 @@ print(paymentIntentData);
   }
 
   Future<void> displaySheet() async {
-    //try {
+    try {
     await Stripe.instance.presentPaymentSheet();
     setState(() {
       _updatePayment(paymentIntentData['id']);
@@ -259,11 +258,11 @@ print(paymentIntentData);
 
       AppNavigation().push(context, HomePage(currentIndex: 2));
     });
-    // } catch (e){
-    //   errorDialog(
-    //       context, 'Error.', 'Failed to make the payment.',
-    //       closeOnBackPress: true, neutralButtonText: "OK");
-    // }
+    } catch (e){
+      errorDialog(
+          context, 'Error.', 'Failed to make the payment.',
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
   }
 
   _updatePayment(String paymentID) async {
