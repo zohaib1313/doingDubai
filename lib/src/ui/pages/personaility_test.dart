@@ -61,31 +61,27 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDropDownLabel(label: 'When It comes to travel you’d rather:'),
-            _buildDropDown(1, [
-              "Explore your own backyard.",
-              "Travel the world, you’ve got a passport!"
-            ]),
-            _buildDropDownLabel(
-                label:
-                    'The location for dinner is yours, what’s the perfect setting?'),
+            _buildDropDownLabel(label: ' Age Group?'),
+            _buildDropDown(
+                1, ["18-30’s", "OAP", "40+", "Family with children"]),
+            _buildDropDownLabel(label: 'Who are you on vacation with?'),
             _buildDropDown(2, [
-              "Grand and Glorious",
-              "Fresh Air Outdoorsy Scene",
-              "Italian Neighborhood, Pasta & Pesto",
-              "Fine Dining & Atmosphere",
-              "Sunset Dinner In A Safari",
+              "Family",
+              "Partner",
+              "Friends",
+              "Alone",
+              //"Sunset Dinner In A Safari",
             ]),
-            _buildDropDownLabel(label: 'What’s your most ideal happy place?'),
+            _buildDropDownLabel(label: ' What are you searching for?'),
             _buildDropDown(3, [
-              "Snowy Peaks & Arresting Views",
-              "Jaw Dropping Awe Inspiring Hills & Scenery",
-              "Sunbathing On A Yacht Deck",
-              "Visit to the Local Market",
-              "Searching for Wildlife & Wonder",
-              "Somewhere on a massage table",
+              "Activities",
+              "Nightlife / Parties",
+              "Beach Clubs",
+              "Restaurants",
+              "All of the above",
+              //"Somewhere on a massage table",
             ]),
-            _buildDropDownLabel(
+            /* _buildDropDownLabel(
                 label: 'You’re at the airport, who’s with you?'),
             _buildDropDown(4, [
               "No One, I Travel Solo",
@@ -102,15 +98,18 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
               "Capture My Instagram Moments",
               "Explore The History",
               "Explore The Local On a Bike"
-            ]),
+            ]),*/
             AuthButton(
                 text: 'Submit',
                 onTap: () {
                   if (((question1 ?? "").isEmpty) ||
-                      ((question2 ?? "").isEmpty) ||
-                      ((question3 ?? "").isEmpty) ||
+                          ((question2 ?? "").isEmpty) ||
+                          ((question3 ?? "")
+                              .isEmpty) /*||
                       ((question4 ?? "").isEmpty) ||
-                      ((question5 ?? "").isEmpty)) {
+                      ((question5 ?? "").isEmpty)*/
+
+                      ) {
                     errorDialog(context, "Error", 'Select All Fields',
                         closeOnBackPress: true, neutralButtonText: "OK");
                   } else {
@@ -176,8 +175,8 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
           "question1": question1 ?? '',
           "question2": question2 ?? '',
           "question3": question3 ?? '',
-          "question4": question4 ?? '',
-          "question5": question5 ?? '',
+          /*     "question4": question4 ?? '',
+          "question5": question5 ?? '',*/
         },
       );
 
