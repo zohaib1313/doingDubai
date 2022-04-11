@@ -2,7 +2,7 @@ String image = 'assets/images';
 
 class AppImages {
   static String logoApp = '$image/logo.png';
-  static String getStarted = '$image/get_started.png';
+  static String getStarted = '$image/get_started.jpg';
   static String facebookLogo = '$image/facebook_logo.png';
   static String appleLogo = '$image/apple_logo.png';
   static String bottomStatsIcon = '$image/bottom_stats.png';
