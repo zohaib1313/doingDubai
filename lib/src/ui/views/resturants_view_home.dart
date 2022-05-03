@@ -73,6 +73,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                   _restaurantsList.isNotEmpty
                       ? ListView.builder(
                           shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: _restaurantsList.length,
                           itemBuilder: (context, index) {
                             return getInfoCardItem(_restaurantsList[index]);

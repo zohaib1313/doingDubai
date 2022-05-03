@@ -74,6 +74,7 @@ class _ClubsViewHomeState extends State<ClubsViewHome> {
                   itemList.isNotEmpty
                       ? ListView.builder(
                           shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: itemList.length,
                           itemBuilder: (context, index) {
                             return getInfoCardItem(itemList[index]);
