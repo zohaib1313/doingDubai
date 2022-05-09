@@ -5,6 +5,7 @@ import 'package:dubai_screens/src/ui/pages/search_result_page.dart';
 import 'package:dubai_screens/src/ui/views/clubs_view_home.dart';
 import 'package:dubai_screens/src/ui/views/events_view_home.dart';
 import 'package:dubai_screens/src/ui/views/landmarks_view_home.dart';
+import 'package:dubai_screens/src/ui/views/night_life_home.dart';
 import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
 import 'package:dubai_screens/src/ui/views/transporters_view_home.dart';
 import 'package:dubai_screens/src/ui/widgets/decrated_text_field.dart';
@@ -37,7 +38,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
     'Events',
     'Clubs',
     'Transporters',
-    'Landmarks'
+    'Landmarks',
+    'NightLife',
+   // 'Brunches'
   ];
   int selectedFilter = 0;
 
@@ -115,7 +118,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
                 EventsViewHome(),
                 ClubsViewHome(),
                 TransportersViewHome(),
-                LandMarksViewHome()
+                LandMarksViewHome(),
+                NightLifeViewHome(),
+
               ],
             )
           ],

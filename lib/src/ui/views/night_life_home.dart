@@ -1,29 +1,32 @@
-import 'package:dubai_screens/config/app_urls.dart';
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
 import 'package:dubai_screens/functions/navigator_functions.dart';
-import 'package:dubai_screens/model/custom_inquiry_model.dart';
-import 'package:dubai_screens/model/restaurant_main_model.dart';
-import 'package:dubai_screens/model/restaurants_model.dart';
+import 'package:dubai_screens/model/events_main_model.dart';
+import 'package:dubai_screens/model/events_model.dart';
+import 'package:dubai_screens/model/night_life_model.dart';
 import 'package:dubai_screens/network_calls.dart';
-import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
-import 'package:dubai_screens/src/ui/views/all_restaurants_page.dart';
+import 'package:dubai_screens/src/ui/views/all_events_page.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
-import 'package:dubai_screens/src/utils/nav.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 
-class ResturantViewHome extends StatefulWidget {
-  ResturantViewHome({Key? key}) : super(key: key);
+import '../../../config/app_urls.dart';
+import '../../../model/custom_inquiry_model.dart';
+import '../../utils/nav.dart';
+import '../pages/inqury/make_inqury.dart';
+import 'all_night_life_page.dart';
+
+class NightLifeViewHome extends StatefulWidget {
+  NightLifeViewHome({Key? key}) : super(key: key);
 
   @override
-  _ResturantViewHomeState createState() => _ResturantViewHomeState();
+  _NightLifeViewHomeState createState() => _NightLifeViewHomeState();
 }
 
-class _ResturantViewHomeState extends State<ResturantViewHome> {
+class _NightLifeViewHomeState extends State<NightLifeViewHome> {
   late AppDio _dio;
 
-  List<Restaurants> _restaurantsList = [];
+  List<NightLifeModel> itemList = [];
   bool _loading = true;
 
   @override
@@ -34,7 +37,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
   }
 
   _init() async {
-    await _getRestaurants();
+    await _getListing();
   }
 
   @override
@@ -51,78 +54,78 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
       children: [
         _loading == true
             ? SizedBox(
-                height: 325.0,
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                    child: CircularProgressIndicator(
-                  color: AppColors.kPrimary,
-                )),
-              )
+          height: 325.0,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.kPrimary,
+              )),
+        )
             : Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                            child: Text(
-                              'Restaurants',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            )),
-                        TextButton(
-                            onPressed: () {
-                              push(const AllRestaurantsPage());
-                            },
-                            child: Text(
-                              'View All',
-                              style: TextStyle(
-                                color: AppColors.kPrimary,
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                  _restaurantsList.isNotEmpty
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _restaurantsList.length,
-                          itemBuilder: (context, index) {
-                            return getInfoCardItem(_restaurantsList[index]);
-                          })
-                      : const Center(
-                          child: Text('No Data Found'),
-                        )
+                  const Expanded(
+                      child: Text(
+                        'Night Life',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        push(const AllNightLifePage());
+                      },
+                      child: Text(
+                        'View All',
+                        style: TextStyle(
+                          color: AppColors.kPrimary,
+                        ),
+                      )),
                 ],
-              )
+              ),
+            ),
+            itemList.isNotEmpty
+                ? ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: itemList.length,
+                itemBuilder: (context, index) {
+                  return getInfoCardItem(itemList[index]);
+                })
+                : const Center(
+              child: Text('No Data Found'),
+            )
+          ],
+        )
       ],
     );
   }
 
-  _getRestaurants() async {
+  _getListing() async {
     try {
       var response = await _dio.get(
-        path: 'all-restaurants',
+        path: 'all-night-life',
       );
       var responseStatusCode = response.statusCode;
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
         _loading = false;
-        var products = responseData['data']['restaurants'];
-        List<Restaurants> tempList = [];
+        var products = responseData['data']['clubs'];
+        List<NightLifeModel> tempList = [];
 
-        await products.forEach((item) async {
-          var model = Restaurants.fromJson(item);
+        await products?.forEach((item) async {
+          var model = NightLifeModel.fromJson(item);
           tempList.add(model);
         });
 
         setState(() {
-          _restaurantsList = tempList;
+          itemList = tempList;
         });
       } else {
         if (responseData != null && mounted) {
@@ -154,28 +157,27 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
     }
   }
 
-  Widget getInfoCardItem(Restaurants restaurant) {
+  Widget getInfoCardItem(NightLifeModel event) {
     return GestureDetector(
       onTap: () async {
-        RestaurantMainModel? model = await NetworkCalls.getOneRestaurant(
-            (restaurant.id ?? -1).toString(), context);
-
+        NightLifeModel? model = await NetworkCalls.getOneNightLife(
+            (event.id ?? -1).toString(), context);
         await AppNavigation().push(
             context,
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: model?.id ?? -1,
-                imageUrl: AppUrl.restaurantPicBaseUrl + (model?.imageUrl ?? ''),
-                key: 'restaurant',
-                name: model?.restaurant ?? '',
+                imageUrl: AppUrl.nightLifePicBaseUrl + (model?.imageUrl ?? ''),
+                key: 'nightLife',
+                name: model?.club ?? '',
                 amenities: model?.amenities ?? '',
+                adults: model?.adults,
                 checkins: model?.checkins,
                 inquiry_price: model?.inquiryPrice,
                 address: model?.address,
                 description: model?.description,
                 dressCode: model?.dressCode,
                 rating: model?.rating,
-                menuOptions: model?.menuOptions,
                 openingHours: model?.openingHours,
                 price: model?.price,
               ),
@@ -201,7 +203,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                       bottomLeft: Radius.circular(20),
                     ),
                     child: Image.network(
-                      'http://dubai.applypressure.co.uk/images/restaurantpics/${restaurant.imageUrl}',
+                      'http://dubai.applypressure.co.uk/images/nightlifepics/${event.imageUrl}',
                       width: 120,
                       height: 150,
                       fit: BoxFit.cover,
@@ -216,7 +218,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            restaurant.restaurant ?? '',
+                            event.club ?? '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                             style: TextStyle(
@@ -227,7 +229,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Text(
-                              restaurant.description ?? '',
+                              event.description ?? '',
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                               style: const TextStyle(
@@ -237,7 +239,7 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                             ),
                           ),
                           Text(
-                            restaurant.address ?? '',
+                            event.address ?? '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(
@@ -250,11 +252,11 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
                   Padding(
                       padding: const EdgeInsets.only(right: 5, top: 15),
                       child: Text(
-                        restaurant.price ?? "£",
+                        event.price ?? "£",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style:
-                            TextStyle(fontSize: 16, color: AppColors.kPrimary),
+                        TextStyle(fontSize: 16, color: AppColors.kPrimary),
                       )),
                 ],
               ),

@@ -1,9 +1,11 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/functions/navigator_functions.dart';
 import 'package:dubai_screens/model/clubs_main_model.dart';
 import 'package:dubai_screens/model/clubs_model.dart';
 import 'package:dubai_screens/network_calls.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
+import 'package:dubai_screens/src/ui/views/all_clubs_page.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
@@ -61,14 +63,29 @@ class _ClubsViewHomeState extends State<ClubsViewHome> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15, left: 20, bottom: 15),
-                    child: Text(
-                      'Clubs',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                            child: Text(
+                              'Clubs',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            )),
+                        TextButton(
+                            onPressed: () {
+                              push(const AllClubsPage());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                color: AppColors.kPrimary,
+                              ),
+                            )),
+                      ],
                     ),
                   ),
                   itemList.isNotEmpty

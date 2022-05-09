@@ -1,5 +1,6 @@
 import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/custom_inquiry_model.dart';
+import 'package:dubai_screens/network_calls.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/submit_inqury.dart';
 import 'package:dubai_screens/src/ui/widgets/buttons.dart';
 import 'package:dubai_screens/src/ui/widgets/stack_images.dart';
@@ -145,7 +146,9 @@ class _MakeInquryState extends State<MakeInqury> {
                 shape: BoxShape.circle,
                 color: AppColors.blackColor,
               ),
-              child: Image.asset(AppImages.send))),
+              child: InkWell(onTap:(){
+               NetworkCalls. openMap(lat: 29.9705658,lng: 71.6092511);
+              },child: Image.asset(AppImages.send)))),
     );
   }
 

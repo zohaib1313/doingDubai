@@ -11,6 +11,8 @@ import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
 
+import '../../../../widgets/other/bottom_sheet.dart';
+import '../../../../widgets/utils/Utils.dart';
 import '../../widgets/decrated_text_field.dart';
 import '../../widgets/image_auth_page.dart';
 
@@ -27,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _lastController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
   // final TextEditingController _countryController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -42,6 +45,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String _selectedDropDown = "";
 
   var _countryController = TextEditingController();
+
+  bool isAcceptedTerms = false;
 
   @override
   void setState(VoidCallback fn) {
@@ -164,25 +169,67 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _confirmPasswordController,
                 validator: (value) {
                   if (value!.trim() == "") return "Required";
-                  if (value.trim() != _passwordController.getText())
+                  if (value.trim() != _passwordController.getText()) {
                     return "Passwords do not match";
+                  }
                   return null;
                 },
               ),
               const SizedBox(
                 height: 50,
               ),
-              AuthButton(
-                  text: "Sign Up",
+              mySimpleCheckBox(
+                  isActive: isAcceptedTerms,
+                  message: "Terms & Conditions",
                   onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      _signUp();
-                    }
+                    setState(() {
+                      isAcceptedTerms = !isAcceptedTerms;
+                    });
+                  },
+                  onMessageTap: () {
+                    AppBottomSheet.appMaterialBottomSheet(context, list: [
+                      ListTile(
+                        title: const Icon(
+                          Icons.maximize_rounded,
+                          size: 40,
+                          color: Colors.grey,
+                        ),
+                        onTap: () {
+                          pop();
+                        },
+                      ),
+                      const Center(
+                          child: Text(
+                        "Terms & Conditions",
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          AppUrl.termsAndConditions,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                      const SizedBox(height: 16)
+                    ]);
                   }),
+
+              const SizedBox(
+                height: 50,
+              ),
+              AuthButton(
+                text: "Sign Up",
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    _signUp();
+
+                  }
+                },
+              ),
               const SizedBox(
                 height: 20,
               ),
-              _buildSocialButtonRow(),
+              //_buildSocialButtonRow(),
             ],
           ),
         ),

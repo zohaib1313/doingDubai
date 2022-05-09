@@ -58,12 +58,12 @@ class _HotelsViewState extends State<HotelsView> {
             children: [
               const Expanded(
                   child: Text(
-                'Luxury Hotels',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              )),
+                    'Luxury Hotels',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  )),
               TextButton(
                   onPressed: () {
                     push(const AllHotelsPage());

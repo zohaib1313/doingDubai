@@ -1,8 +1,10 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/functions/navigator_functions.dart';
 import 'package:dubai_screens/model/events_main_model.dart';
 import 'package:dubai_screens/model/events_model.dart';
 import 'package:dubai_screens/network_calls.dart';
+import 'package:dubai_screens/src/ui/views/all_events_page.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
@@ -61,14 +63,29 @@ class _EventsViewHomeState extends State<EventsViewHome> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15, left: 20, bottom: 15),
-                    child: Text(
-                      'Events',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                            child: Text(
+                              'Events',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            )),
+                        TextButton(
+                            onPressed: () {
+                              push(const AllEventsPage());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                color: AppColors.kPrimary,
+                              ),
+                            )),
+                      ],
                     ),
                   ),
                   itemList.isNotEmpty

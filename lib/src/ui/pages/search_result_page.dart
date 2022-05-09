@@ -113,6 +113,16 @@ class _SearchResultPageState extends State<SearchResultPage> {
         if (reco_transporter != null) {
           map['transporter'] = reco_transporter;
         }
+
+        var reco_nightlife = responseData['data']['nightlife'];
+        if (reco_nightlife != null) {
+          map['nightlife'] = reco_nightlife;
+        }
+        var reco_brunches = responseData['data']['brunches'];
+        if (reco_nightlife != null) {
+          map['brunches'] = reco_brunches;
+        }
+
         for (var element in map.entries) {
           for (var element2 in element.value) {
             CustomInquiryModel model = CustomInquiryModel.fromMap(element2);

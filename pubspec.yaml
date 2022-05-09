@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   intl:
   date_range_picker: ^1.0.7
-
+  url_launcher: ^6.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -45,6 +45,7 @@ dependencies:
   cached_network_image: ^3.0.0
   flutter_svg:
   flutter_stripe: ^2.4.0
+  map_launcher: ^2.2.2
 
 
 dev_dependencies:

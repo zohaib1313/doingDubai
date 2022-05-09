@@ -6,10 +6,13 @@ import 'package:dubai_screens/config/keys/response_code.dart';
 import 'package:dubai_screens/model/clubs_main_model.dart';
 import 'package:dubai_screens/model/events_main_model.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/model/night_life_model.dart';
 import 'package:dubai_screens/model/restaurant_main_model.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:map_launcher/map_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'model/land_mark_main_model.dart';
 import 'model/transporter_main_model.dart';
@@ -255,6 +258,46 @@ class NetworkCalls {
     return null;
   }
 
+  static Future<NightLifeModel?> getOneNightLife(
+      String id, BuildContext context) async {
+    try {
+      var response = await AppDio(context).get(
+        path: 'get-night-life/' + id,
+      );
+      var responseStatusCode = response.statusCode;
+      var responseData = response.data;
+      if (responseStatusCode == StatusCode.OK) {
+        var products = responseData['data']['club'];
+        NightLifeModel model = NightLifeModel.fromJson(products);
+
+        return Future.value(model);
+      } else {
+        if (response.data != null) {
+          errorDialog(context, 'Error', responseData['message'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          errorDialog(
+              context, "Error", "Something went wrong please try again later",
+              closeOnBackPress: true, neutralButtonText: "OK");
+        }
+      }
+    } catch (e, s) {
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+      errorDialog(
+          context, "Error", "Something went wrong please try again later",
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
+    return null;
+  }
+
   static FutureOr<bool>? showConfirmExit(context) {
     showDialog(
       context: context,
@@ -276,5 +319,18 @@ class NetworkCalls {
         ],
       ),
     );
+  }
+
+
+  static void openMap({required double lat,required double lng}) async {
+
+    if (await MapLauncher.isMapAvailable(MapType.google)??false) {
+      await MapLauncher.showMarker(
+        mapType: MapType.google,
+        coords: Coords(lat, lng),
+        title: '',
+        description: '',
+      );
+    }
   }
 }

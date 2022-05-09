@@ -102,7 +102,7 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(
               height: 30,
             ),
-            SocialButton(
+          /*  SocialButton(
               text: 'Sign In with facebook',
               url: AppImages.facebookLogo,
               onTap: () {},
@@ -114,7 +114,7 @@ class _SignInPageState extends State<SignInPage> {
               onTap: () {},
               backGroundColor: Colors.black,
               mainAxisAlignment: MainAxisAlignment.start,
-            ),
+            ),*/
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
