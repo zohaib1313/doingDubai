@@ -85,16 +85,25 @@ class _MakeInquryState extends State<MakeInqury> {
                       flex: 2,
                       child: AuthButton(
                           text: widget.myBookingsModel != null
-                              ? "Update Booking"
+                              ? "Cancel Booking"
                               : 'Make Inquiry',
                           textColor: AppColors.blackColor,
-                          onTap: () {
-                            AppNavigation().push(
-                                context,
-                                SubmitInqury(
-                                  customInquiryModel: widget.customModel,
-                                  myBookingsModel: widget.myBookingsModel,
-                                ));
+                          onTap: () async {
+                            if (widget.myBookingsModel != null) {
+                              //cancel booking
+                              var result = await NetworkCalls.cancelBooking(
+                                  widget.myBookingsModel!, context);
+                              if (result == true) {
+                                pop();
+                              }
+                            } else {
+                              AppNavigation().push(
+                                  context,
+                                  SubmitInqury(
+                                    customInquiryModel: widget.customModel,
+                                    myBookingsModel: widget.myBookingsModel,
+                                  ));
+                            }
                           }),
                     )
                   ],
@@ -146,9 +155,15 @@ class _MakeInquryState extends State<MakeInqury> {
                 shape: BoxShape.circle,
                 color: AppColors.blackColor,
               ),
-              child: InkWell(onTap:(){
-               NetworkCalls. openMap(lat: 29.9705658,lng: 71.6092511);
-              },child: Image.asset(AppImages.send)))),
+              child: InkWell(
+                  onTap: () {
+                    NetworkCalls.openMap(
+                        lat:
+                            double.parse(widget.customModel?.latitude ?? "0.0"),
+                        lng: double.parse(
+                            widget.customModel?.longitude ?? "0.0"));
+                  },
+                  child: Image.asset(AppImages.send)))),
     );
   }
 

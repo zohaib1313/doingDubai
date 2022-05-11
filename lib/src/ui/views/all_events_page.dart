@@ -77,6 +77,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
                                       (model.imageUrl ?? ''),
                                   key: 'event',
                                   name: model.event,
+                                  latitude: model.latitude,
+                                  longitude: model.longitude,
                                   amenities: model.amenities,
                                   adults: model.adults,
                                   checkins: model.checkins,

@@ -78,6 +78,8 @@ class _AllClubsPageState extends State<AllClubsPage> {
                                       (model.imageUrl ?? ''),
                                   key: 'club',
                                   name: model.club,
+                                  latitude: model.latitude,
+                                  longitude: model.longitude,
                                   amenities: model.amenities,
                                   adults: model.adults,
                                   checkins: model.checkins,

@@ -120,12 +120,12 @@ class _SubmitInquryState extends State<SubmitInqury> {
                 textColor: AppColors.blackColor,
                 onTap: () {
                   if (selectedFromDates != null && _selectedTimeIndex != -1) {
-                    if (widget.customInquiryModel?.adults != null &&
+                    /*if (widget.customInquiryModel?.adults != null &&
                         _adults == 0) {
                       warningDialog(context, "Warnings", "Select Adults",
                           closeOnBackPress: true, neutralButtonText: "OK");
                       return;
-                    }
+                    }*/
 
                     if (widget.myBookingsModel != null) {
                       _updateBooking();
@@ -261,8 +261,8 @@ class _SubmitInquryState extends State<SubmitInqury> {
               ),
               const Spacer(),
               Visibility(
-                visible: (widget.customInquiryModel?.adults == true) ||
-                    (widget.customInquiryModel?.adults == 1),
+                visible: (widget.customInquiryModel?.adults == false) ||
+                    (widget.customInquiryModel?.adults == 0),
                 child: Expanded(
                   child: Column(
                     children: [

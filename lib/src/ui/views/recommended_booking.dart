@@ -332,6 +332,8 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customRecomededModel.imageUrl,
                 key: customRecomededModel.key,
                 name: customRecomededModel.name,
@@ -361,6 +363,8 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customRecomededModel.imageUrl,
                 key: customRecomededModel.key,
                 name: customRecomededModel.name,
@@ -388,6 +392,8 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customRecomededModel.imageUrl,
                 key: customRecomededModel.key,
                 name: customRecomededModel.name,
@@ -415,6 +421,8 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customRecomededModel.imageUrl,
                 key: customRecomededModel.key,
                 name: customRecomededModel.name,
@@ -442,6 +450,8 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customRecomededModel.imageUrl,
                 key: customRecomededModel.key,
                 name: customRecomededModel.name,

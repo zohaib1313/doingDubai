@@ -2,6 +2,7 @@ import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/pref_keys.dart';
 import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
+import 'package:dubai_screens/model/night_life_model.dart';
 import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:fialogs/fialogs.dart';
@@ -343,6 +344,16 @@ class _BookingsAndConfirmationsBottomState
           map['transporter'] = reco_transporter;
         }
 
+        var nightlife = responseData['data']['nightlife_bookings'];
+        if (nightlife != null) {
+          map['nightlife'] = nightlife;
+        }
+
+        var brunches = responseData['data']['brunches_bookings'];
+        if (brunches != null) {
+          map['brunches'] = brunches;
+        }
+
         for (var element in map.entries) {
           for (var element2 in element.value) {
             CustomBookingModel customBookingModel =
@@ -425,6 +436,8 @@ class _BookingsAndConfirmationsBottomState
                 imageUrl: customBookingModel.imageUrl,
                 key: customBookingModel.key,
                 name: customBookingModel.name,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 amenities: hotelsModel?.amenities,
                 adults: hotelsModel?.adults,
                 checkins: hotelsModel?.checkins,
@@ -483,6 +496,8 @@ class _BookingsAndConfirmationsBottomState
                 key: customBookingModel.key,
                 name: customBookingModel.name,
                 amenities: hotelsModel?.amenities,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 checkins: hotelsModel?.checkins,
                 address: hotelsModel?.address,
                 description: hotelsModel?.description,
@@ -506,6 +521,8 @@ class _BookingsAndConfirmationsBottomState
               myBookingsModel: customBookingModel,
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customBookingModel.imageUrl,
                 key: customBookingModel.key,
                 name: customBookingModel.name,
@@ -533,6 +550,8 @@ class _BookingsAndConfirmationsBottomState
               myBookingsModel: customBookingModel,
               customModel: CustomInquiryModel(
                 id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
                 imageUrl: customBookingModel.imageUrl,
                 key: customBookingModel.key,
                 name: customBookingModel.name,
@@ -548,6 +567,37 @@ class _BookingsAndConfirmationsBottomState
                 inquiry_price: hotelsModel?.inquiryPrice,
               ),
             ));
+      case 'nightLife':
+        _isLoading = true;
+        NightLifeModel? hotelsModel = await NetworkCalls.getOneNightLife(
+            customBookingModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        return AppNavigation().push(
+            context,
+            MakeInqury(
+              myBookingsModel: customBookingModel,
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customBookingModel.imageUrl,
+                key: customBookingModel.key,
+                name: customBookingModel.name,
+                amenities: hotelsModel?.amenities,
+                adults: hotelsModel?.adults,
+                checkins: hotelsModel?.checkins,
+                address: hotelsModel?.address,
+                description: hotelsModel?.description,
+                dressCode: hotelsModel?.dressCode,
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
+
+      ///todo brucnhes
     }
   }
 }

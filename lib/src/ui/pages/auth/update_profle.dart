@@ -46,6 +46,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     super.initState();
   }
 
+  int counterForImageCache = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +76,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 alignment: Alignment.center,
                 child: AppProfileImage(
                   title: "profile",
+                  counter: counterForImageCache,
                   imagePicker: true,
                   height: 90,
                   width: 90,
@@ -142,11 +145,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   text: "Save",
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      if (_imageFile != null) {
+                      /* if (_imageFile != null) {
                         updateProfile();
                       } else {
                         alertDialog(context, "Error", "Image is required");
-                      }
+                      }*/
+                      updateProfile();
                     }
                   }),
             ],
@@ -165,7 +169,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         _phoneController.text = prefs.getString(PrefKey.MOBILE)!;
         _countryController.text = prefs.getString(PrefKey.COUNTRY)!;
         _profileImageURL = prefs.getString(PrefKey.PROFILE_PICTURE);
-        print(_profileImageURL);
       });
     });
   }
@@ -231,11 +234,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       if (responseStatusCode == StatusCode.OK) {
         if (responseData['status']) {
           var user = responseData['data']['user'];
-
+          print(user);
           await Prefs.getPrefs().then((prefs) {
-            prefs.setString(PrefKey.FIRST_NAME, user['first_name']);
+            prefs.setString(PrefKey.FIRST_NAME, user['first_name'] ?? '');
             prefs.setString(PrefKey.LAST_NAME, user['last_name'] ?? "");
-            prefs.setString(PrefKey.EMAIL, user['email']);
+            prefs.setString(PrefKey.EMAIL, user['email'] ?? "");
             prefs.setString(PrefKey.MOBILE, user['mobile'] ?? "");
             prefs.setString(PrefKey.FB_ID, user['fb_id'] ?? "");
             prefs.setString(PrefKey.TW_ID, user['tw_id'] ?? "");
@@ -247,6 +250,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             prefs.setString(PrefKey.UPDATED_AT, user['updated_at'] ?? "");
             prefs.setString(PrefKey.DELETED_AT, user['deleted_at'] ?? "");
             prefs.setInt(PrefKey.ID, user['id']);
+            imageCache?.clearLiveImages();
+            imageCache?.clear();
+            _profileImageURL =
+                "${prefs.getString(PrefKey.PROFILE_PICTURE)}??dummy=${counterForImageCache++}";
+            if (mounted) {
+              setState(() {});
+            }
           });
 
           pop();

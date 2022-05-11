@@ -12,27 +12,27 @@ import 'package:image_picker/image_picker.dart';
 import 'package:req_fun/req_fun.dart';
 
 class AppProfileImage extends StatefulWidget {
-  final String title;
-  final String? imageTag;
-  final double width;
-  final double height;
-  final double radius;
-  final double iconHeight;
-  final double iconWidth;
-  final double progressSize;
-  final File? imageFile;
-  final String? defaultImageAssets;
-  final String? imageAssets;
-  final String? imageUrl;
-  final bool imagePicker;
-  final bool miniFab;
+   String title;
+   String? imageTag;
+   double width;
+   double height;
+   double radius;
+   double iconHeight;
+   double iconWidth;
+   double progressSize;
+   File? imageFile;
+   String? defaultImageAssets;
+   String? imageAssets;
+   String? imageUrl;
+   bool imagePicker;
+   bool miniFab;
 
-  final bool addDocument;
+   bool addDocument;
 
-  final Function(File, String)? onImageSelected;
-  final Function(String)? onNetworkImageClick;
+   Function(File, String)? onImageSelected;
+   Function(String)? onNetworkImageClick;
 
-  const AppProfileImage({
+   AppProfileImage({
     Key? key,
     required this.title,
     this.imageTag,
@@ -51,6 +51,7 @@ class AppProfileImage extends StatefulWidget {
     this.iconHeight = 35.0,
     this.iconWidth = 35.0,
     this.addDocument = true,
+    required int counter,
   }) : super(key: key);
 
   @override
@@ -112,8 +113,11 @@ class _AppProfileImageState extends State<AppProfileImage> {
                           ? Hero(
                               tag: widget.imageTag ?? widget.title,
                               transitionOnUserGestures: true,
-                              child: CachedNetworkImage(
+                              child: Image.network(
+                                  "http://dubai.applypressure.co.uk/profile_pics/${widget.imageUrl}")
+                              /*CachedNetworkImage(
                                 fit: BoxFit.fill,
+                                key: UniqueKey(),
                                 imageUrl:
                                     'http://dubai.applypressure.co.uk/profile_pics/${widget.imageUrl!}',
                                 imageBuilder: (ctx, imageProvider) {
@@ -147,7 +151,7 @@ class _AppProfileImageState extends State<AppProfileImage> {
                                   widget.imageAssets ?? AppImages.userIcon,
                                   fit: BoxFit.cover,
                                 ),
-                              ),
+                              ),*/
                             )
                           : Image.asset(widget.imageAssets ??
                               widget.defaultImageAssets ??

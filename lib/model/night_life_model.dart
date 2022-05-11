@@ -20,7 +20,7 @@ class NightLifeModel {
   String? checkins;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   NightLifeModel(
       {this.id,

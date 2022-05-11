@@ -168,6 +168,8 @@ class _EventsViewHomeState extends State<EventsViewHome> {
                 imageUrl: AppUrl.eventPicBaseUrl + (model?.imageUrl ?? ''),
                 key: 'event',
                 name: model?.event ?? '',
+                latitude: model?.latitude,
+                longitude: model?.longitude,
                 amenities: model?.amenities ?? '',
                 adults: model?.adults,
                 checkins: model?.checkins,

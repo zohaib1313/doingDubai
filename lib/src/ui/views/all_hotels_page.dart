@@ -84,6 +84,8 @@ class _AllHotelsPageState extends State<AllHotelsPage> {
                                       (hotelsModel.imageUrl ?? ''),
                                   key: 'hotel',
                                   name: hotelsModel.hotel,
+                                  latitude: hotelsModel.latitude,
+                                  longitude: hotelsModel.longitude,
                                   amenities: hotelsModel.amenities,
                                   adults: hotelsModel.adults,
                                   checkins: hotelsModel.checkins,

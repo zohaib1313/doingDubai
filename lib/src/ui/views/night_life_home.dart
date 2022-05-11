@@ -167,8 +167,10 @@ class _NightLifeViewHomeState extends State<NightLifeViewHome> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: model?.id ?? -1,
+                latitude: model?.latitude,
+                longitude: model?.longitude,
                 imageUrl: AppUrl.nightLifePicBaseUrl + (model?.imageUrl ?? ''),
-                key: 'nightLife',
+                key: 'nightlife',
                 name: model?.club ?? '',
                 amenities: model?.amenities ?? '',
                 adults: model?.adults,

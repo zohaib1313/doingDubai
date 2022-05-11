@@ -78,6 +78,8 @@ class _AllTransportersState extends State<AllTransporters> {
                             imageUrl: AppUrl.transportPicBaseUrl + (model.imageUrl ?? ''),
                             key: 'transporter',
                             name: model.company,
+                            latitude: model.latitude,
+                            longitude: model.longitude,
                             inquiry_price: model.inquiryPrice,
                             amenities: '',
                             checkins: model.checkins,

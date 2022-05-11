@@ -165,6 +165,8 @@ class _ResturantViewHomeState extends State<ResturantViewHome> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: model?.id ?? -1,
+                latitude: model?.latitude,
+                longitude: model?.longitude,
                 imageUrl: AppUrl.restaurantPicBaseUrl + (model?.imageUrl ?? ''),
                 key: 'restaurant',
                 name: model?.restaurant ?? '',

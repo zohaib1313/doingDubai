@@ -165,6 +165,8 @@ class _LandMarksViewHomeState extends State<LandMarksViewHome> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: model?.id ?? -1,
+                latitude: model?.latitude,
+                longitude: model?.longitude,
                 imageUrl: AppUrl.landMarkPicBaseUrl + (model?.imageUrl ?? ''),
                 key: 'landmark',
                 name: model?.landmark ?? '',

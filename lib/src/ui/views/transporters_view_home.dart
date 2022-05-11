@@ -165,6 +165,8 @@ class _TransportersViewHomeState extends State<TransportersViewHome> {
             MakeInqury(
               customModel: CustomInquiryModel(
                 id: model?.id ?? -1,
+                latitude: model?.latitude,
+                longitude: model?.longitude,
                 imageUrl: AppUrl.transportPicBaseUrl + (model?.imageUrl ?? ''),
                 key: 'transporter',
                 name: model?.company ?? '',

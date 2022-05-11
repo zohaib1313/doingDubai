@@ -79,8 +79,11 @@ class _AllRestaurantsPageState extends State<AllRestaurantsPage> {
                                 (model.imageUrl ?? ''),
                             key: 'restaurant',
                             name: model.restaurant,
+
                             amenities: model.amenities,
                             adults: true,
+                            latitude: model.latitude,
+                            longitude: model.longitude,
                             checkins: model.checkins,
                             address: model.address,
                             description: model.description,

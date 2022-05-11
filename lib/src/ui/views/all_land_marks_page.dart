@@ -81,6 +81,8 @@ class _AllLandMarksPageState extends State<AllLandMarksPage> {
                             name: model.landmark,
                             inquiry_price: model.inquiryPrice,
                             amenities: '',
+                            latitude: model.latitude,
+                            longitude: model.longitude,
                             checkins: model.checkins,
                             address: model.address,
                             description: model.description,

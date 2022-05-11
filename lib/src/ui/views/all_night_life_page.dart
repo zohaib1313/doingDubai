@@ -78,8 +78,10 @@ class _AllNightLifePageState extends State<AllNightLifePage> {
                           customModel: CustomInquiryModel(
                             id: model.id ?? -1,
                             imageUrl: AppUrl.nightLifePicBaseUrl + (model.imageUrl ?? ''),
-                            key: 'nightLife',
+                            key: 'nightlife',
                             name: model.club,
+                            latitude: model.latitude,
+                            longitude: model.longitude,
                             inquiry_price: model.inquiryPrice,
                             amenities: '',
                             checkins: model.checkins,

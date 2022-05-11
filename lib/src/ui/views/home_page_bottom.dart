@@ -39,7 +39,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
     'Clubs',
     'Transporters',
     'Landmarks',
-    'NightLife',
+    'Nightlife',
    // 'Brunches'
   ];
   int selectedFilter = 0;

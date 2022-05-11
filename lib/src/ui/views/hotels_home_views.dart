@@ -113,6 +113,8 @@ class _HotelsViewState extends State<HotelsView> {
                                             (hotelsModel.imageUrl ?? ''),
                                         key: 'hotel',
                                         name: hotelsModel.hotel,
+                                        latitude: hotelsModel.latitude,
+                                        longitude: hotelsModel.longitude,
                                         amenities: hotelsModel.amenities,
                                         adults: hotelsModel.adults,
                                         checkins: hotelsModel.checkins,
@@ -292,6 +294,8 @@ class _HotelsViewState extends State<HotelsView> {
                       MakeInqury(
                         customModel: CustomInquiryModel(
                           id: hotelsModel.id,
+                          latitude: hotelsModel.latitude,
+                          longitude: hotelsModel.longitude,
                           imageUrl: AppUrl.hotelsPicBaseUrl +
                               (hotelsModel.imageUrl ?? ''),
                           key: 'hotel',

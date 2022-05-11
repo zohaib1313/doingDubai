@@ -4,6 +4,7 @@ import 'package:dubai_screens/config/app_urls.dart';
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
 import 'package:dubai_screens/model/clubs_main_model.dart';
+import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/events_main_model.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
 import 'package:dubai_screens/model/night_life_model.dart';
@@ -321,10 +322,8 @@ class NetworkCalls {
     );
   }
 
-
-  static void openMap({required double lat,required double lng}) async {
-
-    if (await MapLauncher.isMapAvailable(MapType.google)??false) {
+  static void openMap({required double lat, required double lng}) async {
+    if (await MapLauncher.isMapAvailable(MapType.google) ?? false) {
       await MapLauncher.showMarker(
         mapType: MapType.google,
         coords: Coords(lat, lng),
@@ -332,5 +331,42 @@ class NetworkCalls {
         description: '',
       );
     }
+  }
+
+  static Future<bool?> cancelBooking(
+      CustomBookingModel model, BuildContext context) async {
+    try {
+      var response = await AppDio(context).delete(
+        path: 'bookings-delete/' + model.id.toString(),
+      );
+      var responseStatusCode = response.statusCode;
+      var responseData = response.data;
+      if (responseStatusCode == StatusCode.OK) {
+        return Future.value(true);
+      } else {
+        if (response.data != null) {
+          errorDialog(context, 'Error', responseData['message'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          errorDialog(
+              context, "Error", "Something went wrong please try again later",
+              closeOnBackPress: true, neutralButtonText: "OK");
+        }
+      }
+    } catch (e, s) {
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+      errorDialog(
+          context, "Error", "Something went wrong please try again later",
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
+    return null;
   }
 }
