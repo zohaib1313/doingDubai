@@ -4,6 +4,8 @@ import 'package:dubai_screens/model/brunches_model.dart';
 import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
 import 'package:dubai_screens/model/night_life_model.dart';
+import 'package:dubai_screens/model/transporter_main_model.dart';
+import 'package:dubai_screens/model/transporters_model.dart';
 import 'package:dubai_screens/src/ui/views/profile_page_bottom.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:fialogs/fialogs.dart';
@@ -568,7 +570,7 @@ class _BookingsAndConfirmationsBottomState
                 inquiry_price: hotelsModel?.inquiryPrice,
               ),
             ));
-      case 'nightLife':
+      case 'nightlife':
         _isLoading = true;
         NightLifeModel? hotelsModel = await NetworkCalls.getOneNightLife(
             customBookingModel.id.toString(), context);
@@ -622,6 +624,35 @@ class _BookingsAndConfirmationsBottomState
                 dressCode: hotelsModel?.dressCode,
                 rating: hotelsModel?.rating,
                 openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
+      case 'transporter':
+        _isLoading = true;
+        TransporterMainModel? hotelsModel = await NetworkCalls.getOneTransporter(
+            customBookingModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        return AppNavigation().push(
+            context,
+            MakeInqury(
+              myBookingsModel: customBookingModel,
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customBookingModel.imageUrl,
+                key: customBookingModel.key,
+                name: customBookingModel.name,
+                amenities: '',
+                adults: customBookingModel.adults,
+                checkins: hotelsModel?.checkins,
+                address: hotelsModel?.address,
+                description: hotelsModel?.description,
+                dressCode: '',
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.operatingHours,
                 price: hotelsModel?.price,
                 inquiry_price: hotelsModel?.inquiryPrice,
               ),

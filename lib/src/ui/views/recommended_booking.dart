@@ -1,11 +1,13 @@
 import 'package:dubai_screens/config/app_urls.dart';
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/model/brunches_model.dart';
 import 'package:dubai_screens/model/clubs_main_model.dart';
 import 'package:dubai_screens/model/custom_inquiry_model.dart';
 import 'package:dubai_screens/model/custom_recomdended_model.dart';
 import 'package:dubai_screens/model/events_main_model.dart';
 import 'package:dubai_screens/model/land_mark_main_model.dart';
+import 'package:dubai_screens/model/night_life_model.dart';
 import 'package:dubai_screens/model/restaurant_main_model.dart';
 import 'package:dubai_screens/network_calls.dart';
 import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
@@ -14,6 +16,7 @@ import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/hotels_model.dart';
+import '../../../model/transporter_main_model.dart';
 import '../../utils/colors.dart';
 
 class RecommendedBooking extends StatefulWidget {
@@ -463,6 +466,95 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
                 dressCode: hotelsModel?.dressCode,
                 rating: hotelsModel?.rating,
                 openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
+        break;
+
+      case 'nightlife':
+        _isLoading = true;
+        NightLifeModel? hotelsModel = await NetworkCalls.getOneNightLife(
+            customRecomededModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        await AppNavigation().push(
+            context,
+            MakeInqury(
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customRecomededModel.imageUrl,
+                key: customRecomededModel.key,
+                name: customRecomededModel.name,
+                amenities: hotelsModel?.amenities,
+                adults: hotelsModel?.adults,
+                checkins: hotelsModel?.checkins,
+                address: customRecomededModel.address,
+                description: hotelsModel?.description,
+                dressCode: hotelsModel?.dressCode,
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
+        break;
+
+      case 'brunch':
+        _isLoading = true;
+        BrunchesModel? hotelsModel = await NetworkCalls.getOneBrunch(
+            customRecomededModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        await AppNavigation().push(
+            context,
+            MakeInqury(
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customRecomededModel.imageUrl,
+                key: customRecomededModel.key,
+                name: customRecomededModel.name,
+                amenities: hotelsModel?.amenities,
+                adults: false,
+                checkins: hotelsModel?.checkins,
+                address: customRecomededModel.address,
+                description: hotelsModel?.description,
+                dressCode: hotelsModel?.dressCode,
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
+        break;
+      case 'transporter':
+        _isLoading = true;
+        TransporterMainModel? hotelsModel = await NetworkCalls.getOneTransporter(
+            customRecomededModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        await AppNavigation().push(
+            context,
+            MakeInqury(
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customRecomededModel.imageUrl,
+                key: customRecomededModel.key,
+                name: customRecomededModel.name,
+                amenities: '',
+                adults: false,
+                checkins: hotelsModel?.checkins,
+                address: customRecomededModel.address,
+                description: hotelsModel?.description,
+                dressCode:'',
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.operatingHours,
                 price: hotelsModel?.price,
                 inquiry_price: hotelsModel?.inquiryPrice,
               ),
