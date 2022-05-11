@@ -110,28 +110,35 @@ class _PaymentPageState extends State<PaymentPage> {
                   const SizedBox(
                     width: 15,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.customModel?.name ?? '',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Text(
-                          widget.customModel?.description ?? '',
-                          style: const TextStyle(color: Colors.grey),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.customModel?.name ?? '',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
                         ),
-                      ),
-                      Text(
-                        '${widget.date} ${widget.time}',
-                        style: TextStyle(color: AppColors.kPrimary),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+
+                            widget.customModel?.description ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        Text(
+                          '${widget.date} ${widget.time}',
+                          style: TextStyle(color: AppColors.kPrimary),
+                        ),
+                      ],
+                    ),
                   ),
                   const Spacer(),
                   Text(

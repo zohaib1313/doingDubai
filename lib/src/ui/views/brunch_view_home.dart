@@ -1,26 +1,32 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
-import 'package:dubai_screens/model/custom_inquiry_model.dart';
+import 'package:dubai_screens/functions/navigator_functions.dart';
+import 'package:dubai_screens/model/brunches_model.dart';
+import 'package:dubai_screens/model/clubs_main_model.dart';
+import 'package:dubai_screens/model/clubs_model.dart';
+import 'package:dubai_screens/network_calls.dart';
+import 'package:dubai_screens/src/ui/pages/inqury/make_inqury.dart';
+import 'package:dubai_screens/src/ui/views/all_brunches_page.dart';
+import 'package:dubai_screens/src/ui/views/all_clubs_page.dart';
 import 'package:dubai_screens/src/utils/colors.dart';
 import 'package:fialogs/fialogs.dart';
 import 'package:flutter/material.dart';
 
+import '../../../config/app_urls.dart';
+import '../../../model/custom_inquiry_model.dart';
 import '../../utils/nav.dart';
-import 'inqury/make_inqury.dart';
 
-class SearchResultPage extends StatefulWidget {
-  String? query;
-
-  SearchResultPage(this.query);
+class BrunchViewHome extends StatefulWidget {
+  BrunchViewHome({Key? key}) : super(key: key);
 
   @override
-  _SearchResultPageState createState() => _SearchResultPageState();
+  _BrunchViewHomeState createState() => _BrunchViewHomeState();
 }
 
-class _SearchResultPageState extends State<SearchResultPage> {
+class _BrunchViewHomeState extends State<BrunchViewHome> {
   late AppDio _dio;
 
-  List<CustomInquiryModel> itemList = [];
+  List<BrunchesModel> itemList = [];
   bool _loading = true;
 
   @override
@@ -43,101 +49,84 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColors.blackColor,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          automaticallyImplyLeading: true,
-          elevation: 0,
-          iconTheme: IconThemeData(color: AppColors.kPrimary),
-          title: Text("Result \"${widget.query}\""),
-        ),
-        body: _loading == true
-            ? Center(
-                child: SizedBox(
-                  height: 325.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    color: AppColors.kPrimary,
-                  )),
-                ),
-              )
-            : itemList.isNotEmpty
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _loading == true
+            ? SizedBox(
+          height: 325.0,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.kPrimary,
+              )),
+        )
+            : Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                children: [
+                  const Expanded(
+                      child: Text(
+                        'Brunches',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        push(const AllBrunchesPage());
+                      },
+                      child: Text(
+                        'View All',
+                        style: TextStyle(
+                          color: AppColors.kPrimary,
+                        ),
+                      )),
+                ],
+              ),
+            ),
+            itemList.isNotEmpty
                 ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: itemList.length,
-                    itemBuilder: (context, index) {
-                      return getInfoCardItem(itemList[index]);
-                    })
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: itemList.length,
+                itemBuilder: (context, index) {
+                  return getInfoCardItem(itemList[index]);
+                })
                 : const Center(
-                    child: Text('No Data Found'),
-                  ));
+              child: Text('No Data Found'),
+            )
+          ],
+        )
+      ],
+    );
   }
 
   _getListing() async {
     try {
-      var response =
-          await _dio.post(path: '/search', data: {'query': widget.query});
+      var response = await _dio.get(
+        path: 'all-brunches',
+      );
       var responseStatusCode = response.statusCode;
       var responseData = response.data;
       if (responseStatusCode == StatusCode.OK) {
-        Map<String, List<dynamic>> map = {};
-
-        var reco_hotel = responseData['data']['hotels'];
-        if (reco_hotel != null) {
-          map['hotel'] = reco_hotel;
-        }
-
-        var reco_club = responseData['data']['clubs'];
-        if (reco_club != null) {
-          map['club'] = reco_club;
-        }
-
-        var reco_event = responseData['data']['events'];
-        if (reco_event != null) {
-          map['event'] = reco_event;
-        }
-
-        var reco_landmark = responseData['data']['landmarks'];
-        if (reco_landmark != null) {
-          map['landmark'] = reco_landmark;
-        }
-
-        var reco_restaurant = responseData['data']['restaurants'];
-        if (reco_restaurant != null) {
-          map['restaurant'] = reco_restaurant;
-        }
-        var reco_transporter = responseData['data']['transporters'];
-        if (reco_transporter != null) {
-          map['transporter'] = reco_transporter;
-        }
-
-        var reco_nightlife = responseData['data']['nightlife'];
-        if (reco_nightlife != null) {
-          map['nightlife'] = reco_nightlife;
-        }
-        var reco_brunches = responseData['data']['brunches'];
-        if (reco_nightlife != null) {
-          map['brunch'] = reco_brunches;
-        }
-
-        for (var element in map.entries) {
-          for (var element2 in element.value) {
-            CustomInquiryModel model = CustomInquiryModel.fromMap(element2);
-            model.key = element.key;
-            model.imageUrl =
-                'http://dubai.applypressure.co.uk/images/${model.key}pics/${element2['image_url']}';
-            model.name = element2[model.key];
-            itemList.add(model);
-          }
-        }
-
         _loading = false;
-        if (mounted) {
-          setState(() {});
-        }
+        var products = responseData['data']['brunches'];
+        List<BrunchesModel> tempList = [];
+
+        await products.forEach((item) async {
+          var model = BrunchesModel.fromJson(item);
+          tempList.add(model);
+        });
+
+        setState(() {
+          itemList = tempList;
+        });
       } else {
         if (responseData != null && mounted) {
           errorDialog(context, 'Error', responseData['message'],
@@ -168,15 +157,33 @@ class _SearchResultPageState extends State<SearchResultPage> {
     }
   }
 
-  Widget getInfoCardItem(CustomInquiryModel item) {
+  Widget getInfoCardItem(BrunchesModel modelb) {
     return GestureDetector(
       onTap: () async {
+        BrunchesModel? model =
+        await NetworkCalls.getOneBrunch((modelb.id ?? -1).toString(), context);
         await AppNavigation().push(
-          context,
-          MakeInqury(
-            customModel: item,
-          ),
-        );
+            context,
+            MakeInqury(
+              customModel: CustomInquiryModel(
+                id: model?.id ?? -1,
+                imageUrl: AppUrl.brunchpicsPicBaseUrl + (model?.imageUrl ?? ''),
+                key: 'brunch',
+                name: model?.brunch ?? '',
+                latitude: model?.latitude,
+                longitude: model?.longitude,
+                amenities: model?.amenities ?? '',
+                adults: false,
+                checkins: model?.checkins,
+                address: model?.address,
+                description: model?.description,
+                dressCode: model?.dressCode,
+                rating: model?.rating,
+                openingHours: model?.openingHours,
+                price: model?.price,
+                inquiry_price: model?.inquiryPrice,
+              ),
+            ));
       },
       child: Padding(
           padding: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
@@ -198,7 +205,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       bottomLeft: Radius.circular(20),
                     ),
                     child: Image.network(
-                      item.imageUrl ?? '',
+                      'http://dubai.applypressure.co.uk/images/brunchpics/${modelb.imageUrl}',
                       width: 120,
                       height: 150,
                       fit: BoxFit.cover,
@@ -213,7 +220,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            item.name ?? '',
+                            modelb.brunch ?? '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                             style: TextStyle(
@@ -224,7 +231,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Text(
-                              item.description ?? '',
+                              modelb.description ?? '',
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                               style: const TextStyle(
@@ -234,7 +241,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                             ),
                           ),
                           Text(
-                            item.address ?? '',
+                            modelb.address ?? '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(
@@ -247,11 +254,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   Padding(
                       padding: const EdgeInsets.only(right: 5, top: 15),
                       child: Text(
-                        item.price ?? "£",
+                        modelb.price ?? "£",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style:
-                            TextStyle(fontSize: 16, color: AppColors.kPrimary),
+                        TextStyle(fontSize: 16, color: AppColors.kPrimary),
                       )),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/pref_keys.dart';
+import 'package:dubai_screens/model/brunches_model.dart';
 import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/hotels_model.dart';
 import 'package:dubai_screens/model/night_life_model.dart';
@@ -349,9 +350,9 @@ class _BookingsAndConfirmationsBottomState
           map['nightlife'] = nightlife;
         }
 
-        var brunches = responseData['data']['brunches_bookings'];
+        var brunches = responseData['data']['brunch_bookings'];
         if (brunches != null) {
-          map['brunches'] = brunches;
+          map['brunch'] = brunches;
         }
 
         for (var element in map.entries) {
@@ -596,8 +597,36 @@ class _BookingsAndConfirmationsBottomState
                 inquiry_price: hotelsModel?.inquiryPrice,
               ),
             ));
+      case 'brunch':
+        _isLoading = true;
+        BrunchesModel? hotelsModel = await NetworkCalls.getOneBrunch(
+            customBookingModel.id.toString(), context);
+        _isLoading = false;
+        setState(() {});
+        return AppNavigation().push(
+            context,
+            MakeInqury(
+              myBookingsModel: customBookingModel,
+              customModel: CustomInquiryModel(
+                id: hotelsModel?.id,
+                latitude: hotelsModel?.latitude,
+                longitude: hotelsModel?.longitude,
+                imageUrl: customBookingModel.imageUrl,
+                key: customBookingModel.key,
+                name: customBookingModel.name,
+                amenities: hotelsModel?.amenities,
+                adults: false,
+                checkins: hotelsModel?.checkins,
+                address: hotelsModel?.address,
+                description: hotelsModel?.description,
+                dressCode: hotelsModel?.dressCode,
+                rating: hotelsModel?.rating,
+                openingHours: hotelsModel?.openingHours,
+                price: hotelsModel?.price,
+                inquiry_price: hotelsModel?.inquiryPrice,
+              ),
+            ));
 
-      ///todo brucnhes
     }
   }
 }

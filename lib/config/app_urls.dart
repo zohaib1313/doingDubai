@@ -42,6 +42,11 @@ class AppUrl {
   static const String nightLifePicBaseUrl =
       'http://dubai.applypressure.co.uk/images/nightlifepics/';
 
+
+  static const String brunchpicsPicBaseUrl =
+      'http://dubai.applypressure.co.uk/images/brunchpics/';
+
+
   static const String landMarkPicBaseUrl =
       'http://dubai.applypressure.co.uk/images/landmarkpics/';
 

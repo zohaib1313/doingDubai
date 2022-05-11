@@ -2,6 +2,7 @@
 
 import 'package:dubai_screens/config/keys/pref_keys.dart';
 import 'package:dubai_screens/src/ui/pages/search_result_page.dart';
+import 'package:dubai_screens/src/ui/views/brunch_view_home.dart';
 import 'package:dubai_screens/src/ui/views/clubs_view_home.dart';
 import 'package:dubai_screens/src/ui/views/events_view_home.dart';
 import 'package:dubai_screens/src/ui/views/landmarks_view_home.dart';
@@ -34,13 +35,13 @@ class _BottomHomePageState extends State<BottomHomePage> {
   String? _userName;
   List<String> filterList = [
     'Hotels',
-    'Restaurants',
-    'Events',
     'Clubs',
-    'Transporters',
+    'Events',
+    'Restaurants',
+    'Brunches',
     'Landmarks',
+    'Transporters',
     'Nightlife',
-   // 'Brunches'
   ];
   int selectedFilter = 0;
 
@@ -114,11 +115,12 @@ class _BottomHomePageState extends State<BottomHomePage> {
               index: selectedFilter,
               children: [
                 HotelsView(),
-                ResturantViewHome(),
-                EventsViewHome(),
                 ClubsViewHome(),
-                TransportersViewHome(),
+                EventsViewHome(),
+                ResturantViewHome(),
+                BrunchViewHome(),
                 LandMarksViewHome(),
+                TransportersViewHome(),
                 NightLifeViewHome(),
 
               ],

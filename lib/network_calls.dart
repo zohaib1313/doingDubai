@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dubai_screens/config/app_urls.dart';
 import 'package:dubai_screens/config/dio/app_dio.dart';
 import 'package:dubai_screens/config/keys/response_code.dart';
+import 'package:dubai_screens/model/brunches_model.dart';
 import 'package:dubai_screens/model/clubs_main_model.dart';
 import 'package:dubai_screens/model/custom_booking_model.dart';
 import 'package:dubai_screens/model/events_main_model.dart';
@@ -70,6 +71,46 @@ class NetworkCalls {
       if (responseStatusCode == StatusCode.OK) {
         var products = responseData['data']['club'];
         ClubsMainModel model = ClubsMainModel.fromJson(products);
+
+        return Future.value(model);
+      } else {
+        if (response.data != null) {
+          errorDialog(context, 'Error', responseData['message'],
+              closeOnBackPress: true, neutralButtonText: "OK");
+        } else {
+          errorDialog(
+              context, "Error", "Something went wrong please try again later",
+              closeOnBackPress: true, neutralButtonText: "OK");
+        }
+      }
+    } catch (e, s) {
+      print(
+          "ERROR 0 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(e);
+      print(
+          "ERROR 1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print(s);
+      print(
+          "ERROR 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+      errorDialog(
+          context, "Error", "Something went wrong please try again later",
+          closeOnBackPress: true, neutralButtonText: "OK");
+    }
+    return null;
+  }
+
+  static Future<BrunchesModel?> getOneBrunch(
+      String id, BuildContext context) async {
+    try {
+      var response = await AppDio(context).get(
+        path: 'get-brunch/' + id,
+      );
+      var responseStatusCode = response.statusCode;
+      var responseData = response.data;
+      if (responseStatusCode == StatusCode.OK) {
+        var products = responseData['data']['brunch'];
+        BrunchesModel model = BrunchesModel.fromJson(products);
 
         return Future.value(model);
       } else {

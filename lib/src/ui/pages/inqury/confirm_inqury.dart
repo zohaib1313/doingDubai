@@ -1,3 +1,4 @@
+import 'package:dubai_screens/functions/navigator_functions.dart';
 import 'package:dubai_screens/network_calls.dart';
 import 'package:dubai_screens/src/ui/pages/home_page.dart';
 import 'package:fialogs/fialogs.dart';
@@ -154,6 +155,8 @@ class _ConfirmationInquiryState extends State<ConfirmationInquiry> {
       if (status == 0) {
         AppNavigation().pushReplacement(context, HomePage(currentIndex: 2));
       } else if (status == 1) {
+        pop();
+
         AppNavigation().push(
             context,
             PaymentPage(
