@@ -104,8 +104,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                 onTap: () {
                   if (((question1 ?? "").isEmpty) ||
                           ((question2 ?? "").isEmpty) ||
-                          ((question3 ?? "")
-                              .isEmpty) /*||
+                          ((question3 ?? "").isEmpty) /*||
                       ((question4 ?? "").isEmpty) ||
                       ((question5 ?? "").isEmpty)*/
 

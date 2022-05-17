@@ -18,6 +18,7 @@ class AppUrl {
   static var actionBooking = 'action-booking';
   static var getOneHotel = 'get-hotel/';
   static const String recommended_bookings = 'recommended-bookings';
+  static const String personality_bookings = 'auto-recommended-bookings';
   static const String bookingUpdate = 'bookings-update/';
   static const get_stripe_key = "get-stripe-key";
   static const create_payment_intent = "make-stripe-intent";
