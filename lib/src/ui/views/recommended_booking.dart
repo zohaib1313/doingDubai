@@ -224,7 +224,7 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
     _isLoading = true;
     try {
       var response = await _dio.get(
-        path: AppUrl.recommended_bookings,
+        path: AppUrl.personality_bookings,
       );
       var responseStatusCode = response.statusCode;
       var responseData = response.data;
