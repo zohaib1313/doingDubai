@@ -52,6 +52,19 @@ class _ProfilePageBottomState extends State<ProfilePageBottom> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (builder) => HomePage(
+                    currentIndex: 0,
+                  ),
+                ),
+              );
+            },
+            child:
+            Icon(Icons.arrow_back_outlined, color: AppColors.primaryColor)),
         iconTheme: IconThemeData(color: AppColors.kPrimary),
         title: Text(
           'Edit Profile',

@@ -58,4 +58,9 @@ class CustomBookingModel {
     data['restaurant'] = this.restaurant;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'CustomBookingModel{id: $id, userId: $userId, bookDate: $bookDate, bookTime: $bookTime, kids: $kids, adults: $adults, confirmed: $confirmed, paid: $paid, imageUrl: $imageUrl, entityType: $entityType, entityId: $entityId, restaurant: $restaurant, key: $key, name: $name}';
+  }
 }

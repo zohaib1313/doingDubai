@@ -48,7 +48,7 @@ class _AllClubsPageState extends State<AllClubsPage> {
           backgroundColor: AppColors.blackColor,
           iconTheme: IconThemeData(color: AppColors.kPrimary),
           title: Text(
-            "All Clubs",
+            "All Beach Clubs",
             style: TextStyle(color: AppColors.kPrimary),
           ),
           elevation: 0,

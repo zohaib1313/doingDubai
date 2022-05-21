@@ -17,6 +17,8 @@ import 'package:dubai_screens/widgets/other/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:req_fun/req_fun.dart';
 
+import '../pages/home_page.dart';
+import '../widgets/buttons.dart';
 import 'hotels_home_views.dart';
 import 'resturants_view_home.dart';
 
@@ -35,7 +37,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
   String? _userName;
   List<String> filterList = [
     'Hotels',
-    'Clubs',
+    'Beach Clubs',
     'Events',
     'Restaurants',
     'Brunches',
@@ -65,8 +67,20 @@ class _BottomHomePageState extends State<BottomHomePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         elevation: 0,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (builder) => HomePage(
+                    currentIndex: 0,
+                  ),
+                ),
+              );
+            },
+            child:
+                Icon(Icons.arrow_back_outlined, color: AppColors.primaryColor)),
         iconTheme: IconThemeData(color: AppColors.kPrimary),
         actions: [
           InkWell(
@@ -122,7 +136,6 @@ class _BottomHomePageState extends State<BottomHomePage> {
                 LandMarksViewHome(),
                 TransportersViewHome(),
                 NightLifeViewHome(),
-
               ],
             )
           ],
@@ -133,7 +146,7 @@ class _BottomHomePageState extends State<BottomHomePage> {
 
   Widget _buildSearch() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Row(
         children: [
           Expanded(
@@ -161,10 +174,10 @@ class _BottomHomePageState extends State<BottomHomePage> {
             width: 20,
           ),
           Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
                 color: AppColors.kPrimary,
-                borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(16)),
             child: InkWell(
               onTap: () {
                 AppBottomSheet.appMaterialBottomSheet(context, list: [
@@ -216,9 +229,9 @@ class _BottomHomePageState extends State<BottomHomePage> {
                   const SizedBox(height: 16)
                 ]);
               },
-              child: Image.asset(
-                AppImages.bottomStatsIcon,
-                color: Colors.white,
+              child: Text(
+                "Change Category",
+                style: TextStyle(fontSize: 10),
               ),
             ),
           )

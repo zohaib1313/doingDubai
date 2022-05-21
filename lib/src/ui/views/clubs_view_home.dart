@@ -69,7 +69,7 @@ class _ClubsViewHomeState extends State<ClubsViewHome> {
                       children: [
                         const Expanded(
                             child: Text(
-                              'Clubs',
+                              'Beach Clubs',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,

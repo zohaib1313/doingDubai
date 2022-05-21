@@ -43,9 +43,10 @@ class _RecommendedBookingState extends State<RecommendedBooking> {
       appBar: AppBar(
         backgroundColor: AppColors.blackColor,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         elevation: 0,
         title: Text(
-          'Recommended Bookings',
+          'Recommended Bookings for You',
           style: TextStyle(color: AppColors.kPrimary, fontSize: 20),
         ),
         iconTheme: IconThemeData(color: AppColors.kPrimary),

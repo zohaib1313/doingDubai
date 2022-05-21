@@ -30,8 +30,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   final List<Widget> _widgets = [
-    const BottomHomePage(),
     const RecommendedBooking(),
+    const BottomHomePage(),
     const BookingsAndConfirmationsBottom(),
     const ProfilePageBottom()
   ];
@@ -40,32 +40,43 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final value = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Text('Are you sure you want to exit?'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('No'),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                  ),
-                  FlatButton(
-                    child: const Text('Yes, exit'),
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                    },
-                  ),
-                ],
-              );
-            });
+      bool?  value=false;
+        if(_currentIndex!=0){
+          setState(() {
+            _currentIndex=0;
+          });
+        }else{
+           value = await showDialog<bool>(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: const Text('Are you sure you want to exit?'),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child:const Text('No'),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                    ElevatedButton(
+
+                      child: const Text('Yes, exit'),
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  ],
+                );
+              });
+        }
+
+
 
         return value == true;
       },
       child: SafeArea(
         child: Scaffold(
+
           backgroundColor: Colors.black,
           body: _widgets[_currentIndex],
           bottomNavigationBar: BottomNavigationBar(

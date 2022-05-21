@@ -22,6 +22,7 @@ import '../../../model/land_mark_main_model.dart';
 import '../../../model/restaurant_main_model.dart';
 import '../../../network_calls.dart';
 import '../../utils/nav.dart';
+import '../pages/home_page.dart';
 import '../pages/inqury/make_inqury.dart';
 
 class BookingsAndConfirmationsBottom extends StatefulWidget {
@@ -92,6 +93,19 @@ class _BookingsAndConfirmationsBottomState
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (builder) => HomePage(
+                    currentIndex: 0,
+                  ),
+                ),
+              );
+            },
+            child:
+            Icon(Icons.arrow_back_outlined, color: AppColors.primaryColor)),
+        automaticallyImplyLeading: false,
         title: Text(
           'Bookings & Confirmations',
           style: TextStyle(color: AppColors.kPrimary),
@@ -423,11 +437,14 @@ class _BookingsAndConfirmationsBottomState
   }
 
   gotoScreen(CustomBookingModel customBookingModel) async {
+    print("zzzzz");
+    print(customBookingModel);
+
     switch (customBookingModel.key) {
       case 'hotel':
         _isLoading = true;
         HotelsModel? hotelsModel = await NetworkCalls.getOneHotel(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -458,7 +475,7 @@ class _BookingsAndConfirmationsBottomState
       case 'club':
         _isLoading = true;
         ClubsMainModel? hotelsModel = await NetworkCalls.getOneClub(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return await AppNavigation().push(
@@ -486,7 +503,7 @@ class _BookingsAndConfirmationsBottomState
       case 'restaurant':
         _isLoading = true;
         RestaurantMainModel? hotelsModel = await NetworkCalls.getOneRestaurant(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -515,7 +532,7 @@ class _BookingsAndConfirmationsBottomState
       case 'event':
         _isLoading = true;
         EventsMainModel? hotelsModel = await NetworkCalls.getOneEvent(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -544,7 +561,7 @@ class _BookingsAndConfirmationsBottomState
       case 'landmark':
         _isLoading = true;
         LandmarkMainModel? hotelsModel = await NetworkCalls.getOneLandmark(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -573,7 +590,7 @@ class _BookingsAndConfirmationsBottomState
       case 'nightlife':
         _isLoading = true;
         NightLifeModel? hotelsModel = await NetworkCalls.getOneNightLife(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -602,7 +619,7 @@ class _BookingsAndConfirmationsBottomState
       case 'brunch':
         _isLoading = true;
         BrunchesModel? hotelsModel = await NetworkCalls.getOneBrunch(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
@@ -631,7 +648,7 @@ class _BookingsAndConfirmationsBottomState
       case 'transporter':
         _isLoading = true;
         TransporterMainModel? hotelsModel = await NetworkCalls.getOneTransporter(
-            customBookingModel.id.toString(), context);
+            customBookingModel.entityId.toString(), context);
         _isLoading = false;
         setState(() {});
         return AppNavigation().push(
